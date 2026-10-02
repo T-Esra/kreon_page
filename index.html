@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Portfolio — Esra Töle</title>
+  <meta name="description" content="Experimental pixel-based portfolio." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="app" class="app">
+    <canvas id="pixelCanvas" aria-hidden="true"></canvas>
+    <div class="crt-vignette" aria-hidden="true"></div>
+    <div class="crt-scanlines" aria-hidden="true"></div>
+    <div class="crt-noise" aria-hidden="true"></div>
+
+    <header class="identity">
+      <span>ESRA TÖLE</span>
+      <span>LANDSCAPE ARCHITECTURE / DIGITAL SPATIAL PRACTICE</span>
+    </header>
+
+    <section id="pixelNodes" class="pixel-nodes" aria-label="Portfolio sections"></section>
+
+    <div class="hint">MOVE / EXPLORE / ENTER</div>
+  </main>
+
+  <div id="sectionLayer" class="section-layer" aria-hidden="true">
+    <div id="sectionSurface" class="section-surface">
+      <button id="closeButton" class="close-button" type="button" aria-label="Close section">× BACK</button>
+      <div id="sectionContent" class="section-content"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
