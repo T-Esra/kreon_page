@@ -4,337 +4,1290 @@
   --black: #050505;
   --white: #f4f4f0;
   --gray: #858585;
-  --mid: #555;
   --paper: #f1f1ec;
-  --transition: 720ms cubic-bezier(.76,0,.24,1);
+
+  --transition:
+    720ms cubic-bezier(.76, 0, .24, 1);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
+
   background: var(--black);
   color: var(--white);
+
   font-family: "Space Mono", monospace;
+}
+
+body {
+  overscroll-behavior: none;
 }
 
 button {
   font: inherit;
 }
 
+
+/* =====================================================
+   MAIN FIELD
+===================================================== */
+
 .app {
   position: fixed;
   inset: 0;
+
+  width: 100vw;
+  height: 100dvh;
+
   overflow: hidden;
+
   background:
-    radial-gradient(circle at 50% 50%, #171717 0%, #080808 48%, #020202 100%);
+    radial-gradient(
+      circle at 50% 50%,
+      #181818 0%,
+      #090909 48%,
+      #020202 100%
+    );
+
   cursor: crosshair;
 }
 
+
+/* =====================================================
+   PIXEL CANVAS
+===================================================== */
+
 #pixelCanvas {
   position: absolute;
+
   inset: 0;
+
   width: 100%;
   height: 100%;
+
+  display: block;
+
   image-rendering: pixelated;
+
+  pointer-events: none;
 }
+
+
+/* =====================================================
+   CRT EFFECT
+===================================================== */
 
 .crt-noise,
 .crt-scanlines,
 .crt-vignette {
   position: absolute;
+
   inset: 0;
+
   pointer-events: none;
 }
 
+
+/* Fine moving television static */
+
 .crt-noise {
-  opacity: .12;
+  z-index: 2;
+
+  opacity: .105;
+
   mix-blend-mode: screen;
+
   background-image:
-    repeating-radial-gradient(circle at 20% 30%, #fff 0 1px, transparent 1px 3px),
-    repeating-radial-gradient(circle at 80% 70%, #aaa 0 1px, transparent 1px 4px);
-  background-size: 4px 4px, 7px 7px;
-  animation: noiseShift 220ms steps(2) infinite;
+    repeating-radial-gradient(
+      circle at 17% 31%,
+      rgba(255,255,255,.9) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-radial-gradient(
+      circle at 83% 67%,
+      rgba(170,170,170,.7) 0 1px,
+      transparent 1px 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      rgba(255,255,255,.08) 1px,
+      transparent 2px
+    );
+
+  background-size:
+    4px 4px,
+    7px 7px,
+    100% 4px;
+
+  animation:
+    noiseShift
+    150ms
+    steps(2)
+    infinite;
 }
+
+
+/* CRT horizontal lines */
 
 .crt-scanlines {
-  opacity: .08;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 2px,
-    #fff 3px,
-    transparent 4px
-  );
+  z-index: 3;
+
+  opacity: .065;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(255,255,255,.32) 3px,
+      transparent 4px
+    );
+
   mix-blend-mode: screen;
 }
 
+
+/* Dark edges */
+
 .crt-vignette {
-  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.55) 100%);
+  z-index: 4;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 42%,
+      rgba(0,0,0,.20) 70%,
+      rgba(0,0,0,.72) 100%
+    );
 }
 
+
 @keyframes noiseShift {
-  0% { transform: translate(0,0); }
-  25% { transform: translate(-2px,1px); }
-  50% { transform: translate(1px,-2px); }
-  75% { transform: translate(2px,2px); }
-  100% { transform: translate(-1px,0); }
+
+  0% {
+    transform:
+      translate(0, 0);
+  }
+
+  20% {
+    transform:
+      translate(-2px, 1px);
+  }
+
+  40% {
+    transform:
+      translate(1px, -2px);
+  }
+
+  60% {
+    transform:
+      translate(2px, 2px);
+  }
+
+  80% {
+    transform:
+      translate(-1px, -1px);
+  }
+
+  100% {
+    transform:
+      translate(1px, 0);
+  }
 }
+
+
+/* =====================================================
+   TOP IDENTITY
+===================================================== */
 
 .identity {
   position: absolute;
+
   top: 22px;
   left: 26px;
   right: 26px;
-  z-index: 4;
+
+  z-index: 10;
+
   display: flex;
+
   justify-content: space-between;
+
   gap: 20px;
+
   font-size: 10px;
+
   line-height: 1.4;
+
   letter-spacing: .08em;
+
   text-transform: uppercase;
+
   pointer-events: none;
+
   mix-blend-mode: difference;
 }
 
+
+/* =====================================================
+   PIXEL NODE FIELD
+===================================================== */
+
 .pixel-nodes {
   position: absolute;
+
   inset: 0;
-  z-index: 5;
+
+  z-index: 8;
+
+  pointer-events: none;
 }
+
+
+/* =====================================================
+   INFORMATION PIXELS
+===================================================== */
 
 .pixel-node {
   --size: 34px;
   --delay: 0s;
-  --base-opacity: .9;
+
   position: absolute;
+
   width: var(--size);
   height: var(--size);
+
+  min-width: 24px;
+  min-height: 24px;
+
+  transform:
+    translate(-50%, -50%);
+
   border: 0;
+
   padding: 0;
-  background: var(--node-color);
-  color: var(--node-text);
-  display: grid;
-  place-items: center;
+
+  background:
+    var(--node-color);
+
+  color:
+    var(--node-text);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
   cursor: pointer;
+
   image-rendering: pixelated;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08);
-  animation: breathe var(--speed, 4.8s) ease-in-out var(--delay) infinite alternate;
+
+  box-shadow:
+    0 0 0 1px
+    rgba(255,255,255,.08);
+
+  animation:
+    breathe
+    var(--speed, 4.8s)
+    ease-in-out
+    var(--delay)
+    infinite
+    alternate;
+
   transition:
-    transform 180ms steps(2),
-    filter 180ms linear,
-    box-shadow 180ms linear;
+    transform 220ms steps(3),
+    filter 220ms linear,
+    box-shadow 220ms linear;
+  
+  pointer-events: auto;
+
+  /*
+    IMPORTANT:
+    yazının pikselle birlikte
+    kaybolmasını engeller.
+  */
+
+  overflow: visible;
 }
+
+
+/* Pixel texture */
 
 .pixel-node::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  opacity: .18;
-  background:
-    linear-gradient(90deg, transparent 0 46%, currentColor 47% 53%, transparent 54%),
-    linear-gradient(0deg, transparent 0 46%, currentColor 47% 53%, transparent 54%);
-  mix-blend-mode: difference;
-}
 
-.pixel-node span {
-  position: relative;
-  z-index: 1;
-  font-size: clamp(7px, .62vw, 10px);
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  opacity: .95;
+  position: absolute;
+
+  inset: 0;
+
+  opacity: .20;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 46%,
+      currentColor 47% 53%,
+      transparent 54%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 0 46%,
+      currentColor 47% 53%,
+      transparent 54%
+    );
+
+  mix-blend-mode: difference;
+
   pointer-events: none;
 }
 
-.pixel-node:hover {
-  z-index: 20;
-  transform: scale(1.45);
-  filter: contrast(1.3);
-  box-shadow: 0 0 0 2px currentColor, 0 0 24px rgba(255,255,255,.18);
+
+/* =====================================================
+   PIXEL LABEL
+===================================================== */
+
+.pixel-node span {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  z-index: 2;
+
+  /*
+    Yazıyı pikselin içinde
+    tutuyoruz ama okunabilirliği
+    koruyoruz.
+  */
+
+  width: max-content;
+
+  max-width:
+    max(100px, calc(var(--size) * 5));
+
+  padding:
+    3px 5px;
+
+  font-size:
+    clamp(7px, .72vw, 11px);
+
+  line-height: 1.05;
+
+  font-weight: 700;
+
+  letter-spacing: .045em;
+
+  text-align: center;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+
+  color:
+    var(--node-text);
+
+  text-shadow:
+    0 0 5px
+    rgba(0,0,0,.25);
+
+  pointer-events: none;
+
+  /*
+    Yazının pikselin
+    hareketinde okunabilir
+    kalması.
+  */
+
+  user-select: none;
 }
+
+
+/* =====================================================
+   PIXEL HOVER
+===================================================== */
+
+.pixel-node:hover {
+
+  z-index: 30;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.5);
+
+  filter:
+    contrast(1.3);
+
+  box-shadow:
+    0 0 0 2px currentColor,
+    0 0 25px
+    rgba(255,255,255,.20);
+}
+
 
 .pixel-node.is-hovered {
   animation-play-state: paused;
 }
 
+
+/* =====================================================
+   PIXEL BREATHING
+===================================================== */
+
 @keyframes breathe {
-  from { transform: scale(.82); opacity: .72; }
-  to { transform: scale(1.14); opacity: 1; }
+
+  from {
+    transform:
+      translate(-50%, -50%)
+      scale(.86);
+
+    opacity: .72;
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      scale(1.12);
+
+    opacity: 1;
+  }
 }
+
+
+/* =====================================================
+   FULL SCREEN SECTION
+===================================================== */
 
 .section-layer {
+
   position: fixed;
+
   inset: 0;
-  z-index: 50;
+
+  z-index: 100;
+
   visibility: hidden;
+
   pointer-events: none;
+
+  overflow: hidden;
 }
 
+
 .section-layer.open {
+
   visibility: visible;
+
   pointer-events: auto;
 }
 
+
+/* =====================================================
+   EXPANDING SURFACE
+===================================================== */
+
 .section-surface {
+
   position: absolute;
-  left: var(--origin-x, 50vw);
-  top: var(--origin-y, 50vh);
+
+  left:
+    var(--origin-x, 50vw);
+
+  top:
+    var(--origin-y, 50vh);
+
   width: 1px;
   height: 1px;
+
   overflow: hidden;
-  background: var(--surface-color, #050505);
-  color: var(--surface-text, #f4f4f0);
-  transform: translate(-50%, -50%) scale(0);
-  transform-origin: center;
-  transition: width var(--transition), height var(--transition), transform var(--transition);
+
+  background:
+    var(--surface-color, #050505);
+
+  color:
+    var(--surface-text, #f4f4f0);
+
+  transform:
+    translate(-50%, -50%)
+    scale(0);
+
+  transform-origin:
+    center center;
+
+  transition:
+    width var(--transition),
+    height var(--transition),
+    transform var(--transition);
+
+  /*
+    Açılırken hafif CRT
+    hissi.
+  */
+
+  box-shadow:
+    0 0 80px
+    rgba(255,255,255,.08);
 }
 
-.section-layer.open .section-surface {
+
+.section-layer.open
+.section-surface {
+
   width: 100vw;
-  height: 100vh;
-  transform: translate(-50%, -50%) scale(1);
+
+  height: 100dvh;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
 }
+
+
+/* =====================================================
+   SURFACE COLORS
+===================================================== */
 
 .section-surface.paper {
-  --surface-color: var(--paper);
-  --surface-text: var(--black);
+
+  --surface-color:
+    var(--paper);
+
+  --surface-text:
+    var(--black);
 }
+
 
 .section-surface.black {
-  --surface-color: var(--black);
-  --surface-text: var(--white);
+
+  --surface-color:
+    var(--black);
+
+  --surface-text:
+    var(--white);
 }
+
 
 .section-surface.gray {
-  --surface-color: #777;
-  --surface-text: #f4f4f0;
+
+  --surface-color:
+    #777;
+
+  --surface-text:
+    var(--white);
 }
+
+
+/* =====================================================
+   SECTION CONTENT
+===================================================== */
 
 .section-content {
-  width: min(1100px, calc(100vw - 56px));
-  height: 100%;
-  margin: 0 auto;
-  padding: 100px 0 70px;
-  overflow: auto;
+
+  width:
+    min(
+      1100px,
+      calc(100vw - 80px)
+    );
+
+  height:
+    100%;
+
+  margin:
+    0 auto;
+
+  padding:
+    clamp(80px, 10vh, 130px)
+    0
+    80px;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 320ms ease 520ms, transform 320ms ease 520ms;
+
+  transform:
+    translateY(20px);
+
+  transition:
+    opacity 350ms ease 520ms,
+    transform 350ms ease 520ms;
+
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    currentColor
+    transparent;
 }
 
-.section-layer.open .section-content {
+
+.section-layer.open
+.section-content {
+
   opacity: 1;
-  transform: translateY(0);
+
+  transform:
+    translateY(0);
 }
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
 
 .section-content h1 {
-  margin: 0 0 42px;
-  max-width: 900px;
-  font-size: clamp(42px, 9vw, 130px);
-  line-height: .85;
-  letter-spacing: -.08em;
-  text-transform: uppercase;
+
+  margin:
+    0 0 clamp(35px, 6vh, 70px);
+
+  max-width:
+    100%;
+
+  font-size:
+    clamp(
+      48px,
+      9vw,
+      130px
+    );
+
+  line-height:
+    .85;
+
+  letter-spacing:
+    -.08em;
+
+  text-transform:
+    uppercase;
+
+  overflow-wrap:
+    break-word;
 }
 
+
+/* =====================================================
+   SECTION SUBTITLE
+===================================================== */
+
 .section-content h2 {
-  font-size: 13px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  margin: 0 0 14px;
+
+  font-size:
+    clamp(
+      11px,
+      1vw,
+      14px
+    );
+
+  line-height:
+    1.3;
+
+  letter-spacing:
+    .1em;
+
+  text-transform:
+    uppercase;
+
+  margin:
+    0 0 14px;
 }
+
+
+/* =====================================================
+   SECTION TEXT
+===================================================== */
 
 .section-content p,
 .section-content li {
-  max-width: 720px;
-  font-size: 14px;
-  line-height: 1.8;
+
+  max-width:
+    720px;
+
+  font-size:
+    clamp(
+      12px,
+      1vw,
+      15px
+    );
+
+  line-height:
+    1.8;
+
+  margin-top:
+    0;
+
+  overflow-wrap:
+    break-word;
 }
+
 
 .section-content a {
-  color: inherit;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
+
+  color:
+    inherit;
+
+  text-decoration:
+    underline;
+
+  text-decoration-thickness:
+    1px;
+
+  text-underline-offset:
+    4px;
 }
+
+
+/* =====================================================
+   TWO COLUMN CONTENT
+===================================================== */
 
 .content-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 44px;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap:
+    clamp(
+      30px,
+      6vw,
+      80px
+    );
 }
+
+
+/* =====================================================
+   WORK ITEMS
+===================================================== */
 
 .work {
-  border-top: 1px solid currentColor;
-  padding-top: 16px;
-  margin-bottom: 30px;
+
+  border-top:
+    1px solid currentColor;
+
+  padding-top:
+    16px;
+
+  margin-bottom:
+    30px;
 }
+
 
 .work strong {
-  display: block;
-  margin-bottom: 8px;
+
+  display:
+    block;
+
+  margin-bottom:
+    8px;
+
+  font-size:
+    clamp(
+      12px,
+      1vw,
+      15px
+    );
+
+  line-height:
+    1.4;
 }
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
 
 .close-button {
+
   position: fixed;
-  z-index: 10;
-  top: 24px;
-  right: 26px;
-  border: 1px solid currentColor;
-  background: transparent;
-  color: inherit;
-  padding: 9px 12px;
-  cursor: pointer;
-  font-size: 10px;
-  letter-spacing: .06em;
+
+  z-index: 200;
+
+  top:
+    24px;
+
+  right:
+    26px;
+
+  border:
+    1px solid currentColor;
+
+  background:
+    transparent;
+
+  color:
+    inherit;
+
+  padding:
+    10px 14px;
+
+  cursor:
+    pointer;
+
+  font-size:
+    10px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .08em;
+
+  text-transform:
+    uppercase;
+
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
 }
+
 
 .close-button:hover {
-  background: currentColor;
-  color: var(--surface-color);
+
+  background:
+    currentColor;
+
+  color:
+    var(--surface-color);
+
+  transform:
+    scale(1.05);
 }
+
+
+/* =====================================================
+   BOTTOM HINT
+===================================================== */
 
 .hint {
+
   position: absolute;
-  z-index: 6;
-  left: 26px;
-  bottom: 22px;
-  font-size: 9px;
-  letter-spacing: .08em;
-  opacity: .55;
-  pointer-events: none;
+
+  z-index: 9;
+
+  left:
+    26px;
+
+  bottom:
+    22px;
+
+  font-size:
+    9px;
+
+  letter-spacing:
+    .08em;
+
+  opacity:
+    .55;
+
+  pointer-events:
+    none;
 }
 
-@media (max-width: 700px) {
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
   .identity {
-    flex-direction: column;
-    gap: 4px;
+
+    top:
+      18px;
+
+    left:
+      20px;
+
+    right:
+      20px;
+
+    font-size:
+      9px;
   }
 
-  .content-grid {
-    grid-template-columns: 1fr;
-    gap: 25px;
+
+  .pixel-node {
+
+    min-width:
+      28px;
+
+    min-height:
+      28px;
   }
 
-  .section-content {
-    width: calc(100vw - 38px);
-    padding-top: 85px;
-  }
 
   .pixel-node span {
-    font-size: 6px;
+
+    font-size:
+      clamp(
+        7px,
+        1.1vw,
+        10px
+      );
+
+    max-width:
+      130px;
+  }
+
+
+  .section-content {
+
+    width:
+      calc(100vw - 50px);
+
+    padding-top:
+      85px;
+
+    padding-bottom:
+      60px;
   }
 }
 
+
+/* =====================================================
+   PHONE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  html,
+  body {
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+  }
+
+
+  .app {
+
+    width:
+      100vw;
+
+    height:
+      100dvh;
+  }
+
+
+  /* Header */
+
+  .identity {
+
+    top:
+      15px;
+
+    left:
+      16px;
+
+    right:
+      16px;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    gap:
+      3px;
+
+    font-size:
+      7px;
+
+    line-height:
+      1.35;
+
+    letter-spacing:
+      .07em;
+  }
+
+
+  /* Bottom hint */
+
+  .hint {
+
+    left:
+      16px;
+
+    bottom:
+      14px;
+
+    font-size:
+      7px;
+  }
+
+
+  /* Information pixels */
+
+  .pixel-node {
+
+    min-width:
+      31px;
+
+    min-height:
+      31px;
+  }
+
+
+  /*
+    Telefonda yazıyı
+    küçültmek yerine
+    okunabilir tutuyoruz.
+  */
+
+  .pixel-node span {
+
+    font-size:
+      7px;
+
+    letter-spacing:
+      .025em;
+
+    max-width:
+      105px;
+
+    padding:
+      2px 3px;
+  }
+
+
+  /*
+    Mobilde hover olmadığı için
+    dokununca fazla büyümesini
+    engelliyoruz.
+  */
+
+  .pixel-node:hover {
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.2);
+  }
+
+
+  /* Fullscreen content */
+
+  .section-content {
+
+    width:
+      calc(100vw - 32px);
+
+    padding:
+      78px 0 45px;
+
+    margin:
+      0 auto;
+  }
+
+
+  .section-content h1 {
+
+    font-size:
+      clamp(
+        42px,
+        15vw,
+        76px
+      );
+
+    line-height:
+      .88;
+
+    margin-bottom:
+      34px;
+
+    letter-spacing:
+      -.075em;
+  }
+
+
+  .section-content h2 {
+
+    font-size:
+      10px;
+
+    margin-bottom:
+      10px;
+  }
+
+
+  .section-content p,
+  .section-content li {
+
+    font-size:
+      12px;
+
+    line-height:
+      1.7;
+  }
+
+
+  /*
+    İki kolon artık
+    tek kolon.
+  */
+
+  .content-grid {
+
+    grid-template-columns:
+      1fr;
+
+    gap:
+      30px;
+  }
+
+
+  .work {
+
+    padding-top:
+      12px;
+
+    margin-bottom:
+      25px;
+  }
+
+
+  .work strong {
+
+    font-size:
+      12px;
+
+    line-height:
+      1.45;
+  }
+
+
+  /* BACK */
+
+  .close-button {
+
+    top:
+      14px;
+
+    right:
+      15px;
+
+    padding:
+      8px 10px;
+
+    font-size:
+      8px;
+
+    letter-spacing:
+      .06em;
+  }
+
+
+  /* Mobile CRT */
+
+  .crt-noise {
+
+    opacity:
+      .08;
+  }
+
+
+  .crt-scanlines {
+
+    opacity:
+      .045;
+  }
+}
+
+
+/* =====================================================
+   VERY SMALL PHONE
+===================================================== */
+
+@media (max-width: 380px) {
+
+  .pixel-node {
+
+    min-width:
+      27px;
+
+    min-height:
+      27px;
+  }
+
+
+  .pixel-node span {
+
+    font-size:
+      6px;
+
+    max-width:
+      85px;
+  }
+
+
+  .identity {
+
+    font-size:
+      6px;
+  }
+
+
+  .section-content {
+
+    width:
+      calc(100vw - 26px);
+
+    padding-top:
+      70px;
+  }
+
+
+  .section-content h1 {
+
+    font-size:
+      38px;
+  }
+
+
+  .section-content p,
+  .section-content li {
+
+    font-size:
+      11px;
+
+    line-height:
+      1.65;
+  }
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
 @media (prefers-reduced-motion: reduce) {
+
   .pixel-node,
   .section-surface,
   .section-content,
   .crt-noise {
-    animation: none !important;
-    transition: none !important;
+
+    animation:
+      none !important;
+
+    transition:
+      none !important;
   }
 }
