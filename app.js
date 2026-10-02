@@ -1,49 +1,76 @@
-/*
-  PIXEL PORTFOLIO
-  Fluid spatial pixel field
-*/
+/* =========================================================
+   ESRA TÖLE
+   PIXEL PORTFOLIO ENGINE
+   ========================================================= */
+
+"use strict";
+
+
+/* =========================================================
+   CONFIGURATION
+   ========================================================= */
 
 const CONFIG = {
-  pixelCount: 155,
 
-  minPixel: 5,
-  maxPixel: 42,
+  /*
+   * Background particle count.
+   * Automatically adjusted according to screen size.
+   */
+  particleDensity: 0.00020,
 
-  density: 0.72,
+  minParticles: 180,
+  maxParticles: 620,
 
-  // Background noise
-  noiseScale: 0.012,
-  noiseSpeed: 0.00045,
+  /*
+   * Particle movement
+   */
+  movementSpeed: 0.35,
+  flowStrength: 0.85,
 
-  // Pixel breathing
-  flickerAmount: 0.15,
-  flickerSpeed: 0.0017,
+  /*
+   * Mouse interaction
+   */
+  mouseRadius: 240,
+  mouseForce: 0.95,
 
-  // Mouse / touch
-  mouseInfluence: 0.22,
+  /*
+   * Particle appearance
+   */
+  minSize: 1,
+  maxSize: 8,
 
-  // CRT
-  grainAmount: 0.18,
+  /*
+   * CRT grain generated directly on canvas
+   */
+  grainStrength: 0.22,
 
-  // NEW: actual floating movement
-  driftAmount: 1.0,
-  driftSpeed: 0.00035
+  /*
+   * FPS safety
+   */
+  targetFPS: 55
 };
 
 
+/* =========================================================
+   PORTFOLIO SECTIONS
+   ========================================================= */
+
 const sections = [
+
   {
     id: "about",
     label: "ABOUT ME",
     x: 22,
-    y: 26,
-    size: 38,
+    y: 27,
+    size: 76,
     color: "white",
     surface: "paper",
+
     content: `
       <h1>About Me</h1>
 
       <div class="content-grid">
+
         <div>
           <h2>Esra Töle</h2>
 
@@ -69,37 +96,50 @@ const sections = [
             </a>
           </p>
         </div>
+
       </div>
     `
   },
 
+
   {
     id: "works",
     label: "WORKS",
-    x: 69,
+    x: 70,
     y: 24,
-    size: 31,
+    size: 78,
     color: "gray",
     surface: "gray",
+
     content: `
       <h1>Works</h1>
 
       <div class="work">
-        <strong>Söke Alt Havzası — Spatial Analysis</strong>
+        <strong>
+          Söke Alt Havzası — Spatial Analysis
+        </strong>
+
         <p>
-          GIS, landscape units, suitability analysis and spatial data workflows.
+          GIS, landscape units, suitability analysis and spatial
+          data workflows.
         </p>
       </div>
 
       <div class="work">
-        <strong>Çatalan Adventure Park</strong>
+        <strong>
+          Çatalan Adventure Park
+        </strong>
+
         <p>
           Landscape design and spatial planning study.
         </p>
       </div>
 
       <div class="work">
-        <strong>Çekmece Community Center</strong>
+        <strong>
+          Çekmece Community Center
+        </strong>
+
         <p>
           Post-disaster reconstruction, 1:1 wood construction
           and collective making.
@@ -112,49 +152,65 @@ const sections = [
     `
   },
 
+
   {
     id: "education",
     label: "EDUCATION",
     x: 77,
     y: 64,
-    size: 45,
+    size: 88,
     color: "black",
     surface: "black",
+
     content: `
       <h1>Education</h1>
 
       <div class="content-grid">
+
         <div>
           <h2>Çukurova University</h2>
-          <p>Department of Landscape Architecture</p>
-          <p>2022 — 2027</p>
+
+          <p>
+            Department of Landscape Architecture
+          </p>
+
+          <p>
+            2022 — 2027
+          </p>
         </div>
 
         <div>
           <h2>Interests</h2>
+
           <p>
             Landscape architecture, GIS, remote sensing,
             digital fabrication, spatial data,
             computational design and wood construction.
           </p>
         </div>
+
       </div>
     `
   },
 
+
   {
     id: "experience",
     label: "EXPERIENCE",
-    x: 24,
-    y: 70,
-    size: 29,
+    x: 23,
+    y: 69,
+    size: 86,
     color: "gray",
     surface: "black",
+
     content: `
       <h1>Experience</h1>
 
       <div class="work">
-        <strong>LIDAR / Spatial Analysis Internship</strong>
+        <strong>
+          LIDAR / Spatial Analysis Internship
+        </strong>
+
         <p>
           Point clouds, mesh generation, spatial analysis
           and real-world data workflows.
@@ -162,7 +218,10 @@ const sections = [
       </div>
 
       <div class="work">
-        <strong>KARMEN Landscape Design Office</strong>
+        <strong>
+          KARMEN Landscape Design Office
+        </strong>
+
         <p>
           AutoCAD project drawings, dimensioning,
           planting and site visits.
@@ -170,7 +229,10 @@ const sections = [
       </div>
 
       <div class="work">
-        <strong>İstanbul Planning Agency</strong>
+        <strong>
+          İstanbul Planning Agency
+        </strong>
+
         <p>
           GIS-based planning work around Beyoğlu,
           Kasımpaşa and Haliç using ArcGIS and QGIS.
@@ -179,14 +241,16 @@ const sections = [
     `
   },
 
+
   {
     id: "contact",
     label: "CONTACT",
-    x: 48,
-    y: 79,
-    size: 23,
+    x: 49,
+    y: 80,
+    size: 68,
     color: "white",
     surface: "paper",
+
     content: `
       <h1>Contact</h1>
 
@@ -206,14 +270,16 @@ const sections = [
     `
   },
 
+
   {
     id: "cv",
     label: "CV",
-    x: 53,
-    y: 40,
-    size: 17,
+    x: 52,
+    y: 42,
+    size: 62,
     color: "black",
     surface: "black",
+
     content: `
       <h1>CV</h1>
 
@@ -228,53 +294,194 @@ const sections = [
       </p>
     `
   }
+
 ];
 
 
-const canvas = document.getElementById("pixelCanvas");
-const ctx = canvas.getContext("2d", { alpha: true });
+/* =========================================================
+   DOM
+   ========================================================= */
 
-const nodeLayer = document.getElementById("pixelNodes");
+const canvas =
+  document.getElementById("pixelCanvas");
 
-const sectionLayer = document.getElementById("sectionLayer");
-const sectionSurface = document.getElementById("sectionSurface");
-const sectionContent = document.getElementById("sectionContent");
+const ctx =
+  canvas.getContext("2d", {
+    alpha: false
+  });
 
-const closeButton = document.getElementById("closeButton");
+const nodeLayer =
+  document.getElementById("pixelNodes");
+
+const sectionLayer =
+  document.getElementById("sectionLayer");
+
+const sectionSurface =
+  document.getElementById("sectionSurface");
+
+const sectionContent =
+  document.getElementById("sectionContent");
+
+const sectionLabel =
+  document.getElementById("sectionLabel");
+
+const closeButton =
+  document.getElementById("closeButton");
 
 
-let dpr = Math.min(window.devicePixelRatio || 1, 2);
+/* =========================================================
+   GLOBAL STATE
+   ========================================================= */
 
 let W = 0;
 let H = 0;
 
-let pixels = [];
+let dpr = 1;
 
-let mouse = {
-  x: -1000,
-  y: -1000,
-  active: false
-};
+let particles = [];
 
 let opened = false;
 
+let activeSection = null;
 
-/* --------------------------------------------------
+let lastTime = 0;
+
+let fpsCounter = 0;
+
+let fpsTime = 0;
+
+
+/* =========================================================
+   POINTER STATE
+   ========================================================= */
+
+const pointer = {
+
+  x: -9999,
+  y: -9999,
+
+  previousX: -9999,
+  previousY: -9999,
+
+  velocityX: 0,
+  velocityY: 0,
+
+  active: false
+};
+
+
+/* =========================================================
+   RANDOM HELPERS
+   ========================================================= */
+
+function random(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+
+function lerp(a, b, amount) {
+  return a + (b - a) * amount;
+}
+
+
+/* =========================================================
+   CREATE PARTICLES
+   ========================================================= */
+
+function createParticles() {
+
+  const area = W * H;
+
+  let count =
+    Math.floor(area * CONFIG.particleDensity);
+
+  count = clamp(
+    count,
+    CONFIG.minParticles,
+    CONFIG.maxParticles
+  );
+
+
+  particles = new Array(count);
+
+
+  for (let i = 0; i < count; i++) {
+
+    particles[i] = {
+
+      x: random(0, W),
+      y: random(0, H),
+
+      vx: random(-0.18, 0.18),
+      vy: random(-0.18, 0.18),
+
+      baseSize:
+        random(
+          CONFIG.minSize,
+          CONFIG.maxSize
+        ),
+
+      size:
+        random(
+          CONFIG.minSize,
+          CONFIG.maxSize
+        ),
+
+      alpha:
+        random(.18, .82),
+
+      phase:
+        random(0, Math.PI * 2),
+
+      frequency:
+        random(.00035, .0012),
+
+      drift:
+        random(.3, 1.3),
+
+      seed:
+        random(0, 10000),
+
+      brightness:
+        random(.35, 1)
+    };
+  }
+}
+
+
+/* =========================================================
    RESIZE
--------------------------------------------------- */
+   ========================================================= */
 
 function resize() {
 
-  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  dpr =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
 
   W = window.innerWidth;
   H = window.innerHeight;
 
-  canvas.width = Math.floor(W * dpr);
-  canvas.height = Math.floor(H * dpr);
 
-  canvas.style.width = `${W}px`;
-  canvas.style.height = `${H}px`;
+  canvas.width =
+    Math.floor(W * dpr);
+
+  canvas.height =
+    Math.floor(H * dpr);
+
+  canvas.style.width =
+    `${W}px`;
+
+  canvas.style.height =
+    `${H}px`;
+
 
   ctx.setTransform(
     dpr,
@@ -285,179 +492,267 @@ function resize() {
     0
   );
 
-  createPixels();
+
+  createParticles();
 }
 
 
-/* --------------------------------------------------
-   RANDOM / NOISE
--------------------------------------------------- */
+/* =========================================================
+   PARTICLE FLOW FIELD
+   ========================================================= */
 
-function hash(x, y, t = 0) {
+function flowAngle(x, y, time, seed) {
 
-  const v =
+  const a =
     Math.sin(
-      x * 12.9898 +
-      y * 78.233 +
-      t * 0.0007
-    ) *
-    43758.5453;
+      x * 0.0021 +
+      time * 0.00019 +
+      seed
+    );
 
-  return v - Math.floor(v);
-}
+  const b =
+    Math.cos(
+      y * 0.0017 -
+      time * 0.00015 +
+      seed * 1.7
+    );
 
+  const c =
+    Math.sin(
+      (x + y) * 0.0008 +
+      time * 0.00012
+    );
 
-function smoothNoise(x, y, t) {
-
-  const s = CONFIG.noiseScale;
-
-  const x0 = Math.floor(x * s);
-  const y0 = Math.floor(y * s);
-
-  const fx = x * s - x0;
-  const fy = y * s - y0;
-
-  const a = hash(x0, y0, t);
-  const b = hash(x0 + 1, y0, t);
-  const c = hash(x0, y0 + 1, t);
-  const d = hash(x0 + 1, y0 + 1, t);
-
-  const ux = fx * fx * (3 - 2 * fx);
-  const uy = fy * fy * (3 - 2 * fy);
 
   return (
-    a +
-    (b - a) * ux +
-    (c - a) * uy +
-    (a - b - c + d) * ux * uy
+    a * 1.4 +
+    b * 1.2 +
+    c * .9
   );
 }
 
 
-/* --------------------------------------------------
-   CREATE PIXELS
--------------------------------------------------- */
+/* =========================================================
+   UPDATE PARTICLES
+   ========================================================= */
 
-function createPixels() {
+function updateParticles(time, delta) {
 
-  const area = W * H;
+  const dt =
+    Math.min(delta, 32);
 
-  const scale =
-    Math.sqrt(area / (1440 * 900));
 
-  const count =
-    Math.round(
-      CONFIG.pixelCount *
-      Math.max(
-        0.65,
-        Math.min(1.35, scale)
-      )
-    );
+  for (const p of particles) {
 
-  pixels = [];
+    /*
+     * Organic flow
+     */
 
-  for (let i = 0; i < count; i++) {
+    const angle =
+      flowAngle(
+        p.x,
+        p.y,
+        time,
+        p.seed
+      );
 
-    const x = Math.random() * W;
-    const y = Math.random() * H;
 
-    const size =
-      CONFIG.minPixel +
-      Math.pow(Math.random(), 2.1) *
-      CONFIG.maxPixel;
+    const flowX =
+      Math.cos(angle) *
+      CONFIG.flowStrength *
+      p.drift;
 
-    pixels.push({
+    const flowY =
+      Math.sin(angle) *
+      CONFIG.flowStrength *
+      p.drift;
 
-      x,
-      y,
 
-      size,
+    p.vx =
+      lerp(
+        p.vx,
+        flowX * .025,
+        .025
+      );
 
-      phase:
-        Math.random() *
-        Math.PI *
-        2,
+    p.vy =
+      lerp(
+        p.vy,
+        flowY * .025,
+        .025
+      );
 
-      speed:
-        0.6 +
-        Math.random() *
-        1.6,
 
-      alpha:
-        0.3 +
-        Math.random() *
-        0.7,
+    /*
+     * Slow natural movement
+     */
 
-      seed:
-        Math.random() * 1000,
+    p.x +=
+      p.vx *
+      CONFIG.movementSpeed *
+      dt;
 
-      tone:
-        Math.random() < 0.53
-          ? 255
-          : 75 + Math.random() * 130,
+    p.y +=
+      p.vy *
+      CONFIG.movementSpeed *
+      dt;
 
-      /* NEW */
 
-      angle:
-        Math.random() *
-        Math.PI *
-        2,
+    /*
+     * Mouse / touch force
+     */
 
-      drift:
-        0.25 +
-        Math.random() * 1.0,
+    if (pointer.active) {
 
-      orbit:
-        0.3 +
-        Math.random() * 1.3,
+      const dx =
+        p.x - pointer.x;
 
-      offsetX:
-        Math.random() * 1000,
+      const dy =
+        p.y - pointer.y;
 
-      offsetY:
-        Math.random() * 1000
-    });
+      const distance =
+        Math.sqrt(
+          dx * dx +
+          dy * dy
+        );
+
+
+      if (
+        distance > 0 &&
+        distance < CONFIG.mouseRadius
+      ) {
+
+        const normalized =
+          1 -
+          distance /
+          CONFIG.mouseRadius;
+
+        const force =
+          normalized *
+          normalized *
+          CONFIG.mouseForce;
+
+
+        /*
+         * Push away from pointer
+         */
+
+        p.vx +=
+          (dx / distance) *
+          force *
+          .018;
+
+        p.vy +=
+          (dy / distance) *
+          force *
+          .018;
+
+
+        /*
+         * Pointer movement creates flow
+         */
+
+        p.vx +=
+          pointer.velocityX *
+          normalized *
+          .0008;
+
+        p.vy +=
+          pointer.velocityY *
+          normalized *
+          .0008;
+      }
+    }
+
+
+    /*
+     * Velocity damping
+     */
+
+    p.vx *= .992;
+    p.vy *= .992;
+
+
+    /*
+     * Soft breathing
+     */
+
+    p.size =
+      p.baseSize *
+      (
+        1 +
+        Math.sin(
+          time * p.frequency +
+          p.phase
+        ) *
+        .35
+      );
+
+
+    /*
+     * Screen wrapping
+     */
+
+    const margin = 30;
+
+
+    if (p.x < -margin) {
+      p.x = W + margin;
+    }
+
+    if (p.x > W + margin) {
+      p.x = -margin;
+    }
+
+    if (p.y < -margin) {
+      p.y = H + margin;
+    }
+
+    if (p.y > H + margin) {
+      p.y = -margin;
+    }
   }
 }
 
 
-/* --------------------------------------------------
-   DRAW FIELD
--------------------------------------------------- */
+/* =========================================================
+   DRAW BACKGROUND
+   ========================================================= */
 
-function drawField(time) {
+function drawBackground() {
 
-  ctx.clearRect(
-    0,
-    0,
-    W,
-    H
-  );
+  /*
+   * Deep CRT background
+   */
 
-
-  /* BACKGROUND */
-
-  const bg =
+  const gradient =
     ctx.createRadialGradient(
-      W * 0.5,
-      H * 0.5,
+      W * .5,
+      H * .48,
       0,
-      W * 0.5,
-      H * 0.5,
-      Math.max(W, H) * 0.75
+      W * .5,
+      H * .48,
+      Math.max(W, H) * .8
     );
 
-  bg.addColorStop(
+
+  gradient.addColorStop(
     0,
     "#171717"
   );
 
-  bg.addColorStop(
-    1,
-    "#030303"
+  gradient.addColorStop(
+    .42,
+    "#0b0b0b"
   );
 
-  ctx.fillStyle = bg;
+  gradient.addColorStop(
+    1,
+    "#000000"
+  );
+
+
+  ctx.fillStyle = gradient;
 
   ctx.fillRect(
     0,
@@ -465,290 +760,401 @@ function drawField(time) {
     W,
     H
   );
+}
 
 
-  /* PIXELS */
+/* =========================================================
+   DRAW PARTICLES
+   ========================================================= */
 
-  for (const p of pixels) {
+function drawParticles(time) {
 
-    const n =
-      smoothNoise(
-        p.x,
-        p.y,
-        time * CONFIG.noiseSpeed
-      );
+  ctx.save();
 
-
-    /*
-      REAL FLOATING MOTION
-
-      Each pixel gets its own
-      slow orbit / drift.
-    */
-
-    const driftTime =
-      time *
-      CONFIG.driftSpeed *
-      p.speed;
+  ctx.globalCompositeOperation =
+    "screen";
 
 
-    const floatX =
+  for (const p of particles) {
+
+    const flicker =
+      .72 +
       Math.sin(
-        driftTime +
-        p.offsetX
-      ) *
-      28 *
-      p.drift;
-
-
-    const floatY =
-      Math.cos(
-        driftTime * 0.83 +
-        p.offsetY
-      ) *
-      22 *
-      p.drift;
-
-
-    const secondaryX =
-      Math.sin(
-        driftTime * 0.43 +
+        time * p.frequency * 2 +
         p.phase
       ) *
-      9 *
-      p.orbit;
-
-
-    const secondaryY =
-      Math.cos(
-        driftTime * 0.37 +
-        p.phase
-      ) *
-      9 *
-      p.orbit;
-
-
-    let px =
-      p.x +
-      floatX +
-      secondaryX;
-
-    let py =
-      p.y +
-      floatY +
-      secondaryY;
-
-
-    /*
-      WRAP AROUND SCREEN
-
-      Pixels leaving one side
-      quietly enter from the other.
-    */
-
-    if (px < -60) px = W + 60;
-    if (px > W + 60) px = -60;
-
-    if (py < -60) py = H + 60;
-    if (py > H + 60) py = -60;
-
-
-    /* MOUSE */
-
-    const distance =
-      mouse.active
-        ? Math.hypot(
-            px - mouse.x,
-            py - mouse.y
-          )
-        : 9999;
-
-
-    const influence =
-      mouse.active
-        ? Math.max(
-            0,
-            1 - distance / 280
-          ) *
-          CONFIG.mouseInfluence
-        : 0;
-
-
-    /*
-      Pixels gently react
-      to cursor.
-    */
-
-    const mouseDX =
-      mouse.active
-        ? (px - mouse.x) *
-          influence *
-          0.045
-        : 0;
-
-    const mouseDY =
-      mouse.active
-        ? (py - mouse.y) *
-          influence *
-          0.045
-        : 0;
-
-
-    /* BREATHING */
-
-    const pulse =
-      1 +
-      Math.sin(
-        time *
-          CONFIG.flickerSpeed *
-          p.speed +
-          p.phase
-      ) *
-      CONFIG.flickerAmount;
-
-
-    const size =
-      p.size *
-      pulse *
-      (1 + influence * 1.8);
-
-
-    let threshold =
-      0.46 +
-      (n - 0.5) *
-      CONFIG.density;
-
-
-    threshold +=
-      Math.sin(
-        time *
-          CONFIG.noiseSpeed *
-          1.4 +
-          p.seed
-      ) *
-      0.03;
-
-
-    const light =
-      threshold > 0.5;
-
-
-    const base =
-      light
-        ? 244
-        : p.tone;
+      .28;
 
 
     const alpha =
-      Math.min(
-        1,
-        p.alpha *
-        (0.48 + n * 0.72)
+      p.alpha *
+      flicker;
+
+
+    const brightness =
+      Math.floor(
+        90 +
+        p.brightness *
+        165
       );
 
 
-    ctx.globalAlpha = alpha;
-
     ctx.fillStyle =
-      `rgb(${base},${base},${base})`;
+      `rgba(
+        ${brightness},
+        ${brightness},
+        ${brightness},
+        ${alpha}
+      )`;
 
+
+    const size =
+      Math.max(
+        .7,
+        p.size
+      );
+
+
+    /*
+     * Tiny square particles
+     */
 
     ctx.fillRect(
-
-      Math.round(
-        px +
-        mouseDX -
-        size / 2
-      ),
-
-      Math.round(
-        py +
-        mouseDY -
-        size / 2
-      ),
-
-      Math.max(
-        1,
-        Math.round(size)
-      ),
-
-      Math.max(
-        1,
-        Math.round(size)
-      )
+      Math.round(p.x),
+      Math.round(p.y),
+      Math.ceil(size),
+      Math.ceil(size)
     );
   }
 
 
-  ctx.globalAlpha = 1;
+  ctx.restore();
+}
 
 
-  /* --------------------------------------------------
-     FINE CRT GRAIN
-  -------------------------------------------------- */
+/* =========================================================
+   EXTRA STATIC
+   ========================================================= */
 
-  if (CONFIG.grainAmount > 0) {
+function drawStatic() {
 
-    const grainCount =
-      Math.floor(
-        W *
-        H /
-        4200 *
-        CONFIG.grainAmount
-      );
+  const amount =
+    Math.floor(
+      W * H * CONFIG.grainStrength / 850
+    );
 
 
-    for (
-      let i = 0;
-      i < grainCount;
-      i++
+  ctx.save();
+
+  ctx.globalCompositeOperation =
+    "screen";
+
+
+  for (
+    let i = 0;
+    i < amount;
+    i++
+  ) {
+
+    const x =
+      Math.random() * W;
+
+    const y =
+      Math.random() * H;
+
+
+    const brightness =
+      Math.random() > .5
+        ? 255
+        : 55;
+
+
+    const alpha =
+      Math.random() * .16;
+
+
+    ctx.fillStyle =
+      `rgba(
+        ${brightness},
+        ${brightness},
+        ${brightness},
+        ${alpha}
+      )`;
+
+
+    const size =
+      Math.random() > .96
+        ? 2
+        : 1;
+
+
+    ctx.fillRect(
+      x,
+      y,
+      size,
+      size
+    );
+  }
+
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   HORIZONTAL CRT GLITCHES
+   ========================================================= */
+
+function drawGlitches(time) {
+
+  /*
+   * Small amount of moving horizontal noise.
+   */
+
+  if (
+    Math.random() > .88
+  ) {
+
+    const y =
+      Math.random() * H;
+
+    const height =
+      Math.random() * 2 + 1;
+
+    const alpha =
+      Math.random() * .12;
+
+
+    ctx.fillStyle =
+      `rgba(
+        255,
+        255,
+        255,
+        ${alpha}
+      )`;
+
+
+    ctx.fillRect(
+      0,
+      y,
+      W,
+      height
+    );
+  }
+
+
+  /*
+   * Very subtle vertical interference.
+   */
+
+  if (
+    Math.random() > .94
+  ) {
+
+    const x =
+      Math.random() * W;
+
+    const width =
+      random(1, 4);
+
+
+    ctx.fillStyle =
+      "rgba(255,255,255,.08)";
+
+
+    ctx.fillRect(
+      x,
+      0,
+      width,
+      H
+    );
+  }
+}
+
+
+/* =========================================================
+   MAIN ANIMATION
+   ========================================================= */
+
+function animate(time) {
+
+  if (!lastTime) {
+    lastTime = time;
+  }
+
+
+  const delta =
+    time - lastTime;
+
+
+  lastTime = time;
+
+
+  updateParticles(
+    time,
+    delta
+  );
+
+
+  drawBackground();
+
+  drawParticles(time);
+
+  drawStatic();
+
+  drawGlitches(time);
+
+
+  /*
+   * FPS monitor
+   */
+
+  fpsCounter++;
+
+  if (
+    time - fpsTime > 1000
+  ) {
+
+    const fps =
+      fpsCounter;
+
+    fpsCounter = 0;
+
+    fpsTime = time;
+
+
+    /*
+     * If device is struggling,
+     * reduce particles.
+     */
+
+    if (
+      fps < CONFIG.targetFPS &&
+      particles.length >
+      CONFIG.minParticles
     ) {
 
-      const x =
-        Math.random() * W;
-
-      const y =
-        Math.random() * H;
-
-
-      const value =
-        Math.random() > 0.5
-          ? 255
-          : 20;
-
-
-      const alpha =
-        Math.random() * 0.09;
-
-
-      ctx.fillStyle =
-        `rgba(
-          ${value},
-          ${value},
-          ${value},
-          ${alpha}
-        )`;
-
-
-      ctx.fillRect(
-        Math.floor(x),
-        Math.floor(y),
-        1,
-        1
+      particles.splice(
+        0,
+        Math.floor(
+          particles.length * .08
+        )
       );
     }
   }
 
 
   requestAnimationFrame(
-    drawField
+    animate
   );
 }
 
 
-/* --------------------------------------------------
-   BUILD INTERACTIVE PIXELS
--------------------------------------------------- */
+/* =========================================================
+   POINTER MOVEMENT
+   ========================================================= */
+
+function updatePointer(x, y) {
+
+  if (
+    pointer.x > -900
+  ) {
+
+    pointer.velocityX =
+      x - pointer.x;
+
+    pointer.velocityY =
+      y - pointer.y;
+  }
+
+
+  pointer.previousX =
+    pointer.x;
+
+  pointer.previousY =
+    pointer.y;
+
+  pointer.x = x;
+  pointer.y = y;
+
+  pointer.active = true;
+}
+
+
+window.addEventListener(
+  "pointermove",
+  event => {
+
+    updatePointer(
+      event.clientX,
+      event.clientY
+    );
+  },
+  {
+    passive: true
+  }
+);
+
+
+window.addEventListener(
+  "pointerleave",
+  () => {
+
+    pointer.active = false;
+
+    pointer.x = -9999;
+    pointer.y = -9999;
+  }
+);
+
+
+/* =========================================================
+   TOUCH
+   ========================================================= */
+
+window.addEventListener(
+  "touchmove",
+  event => {
+
+    if (
+      !event.touches.length
+    ) {
+      return;
+    }
+
+
+    const touch =
+      event.touches[0];
+
+
+    updatePointer(
+      touch.clientX,
+      touch.clientY
+    );
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+window.addEventListener(
+  "touchend",
+  () => {
+
+    pointer.active = false;
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+/* =========================================================
+   BUILD MENU
+   ========================================================= */
 
 function buildNodes() {
 
@@ -762,12 +1168,10 @@ function buildNodes() {
         document.createElement("button");
 
 
+      button.type = "button";
+
       button.className =
         "pixel-node";
-
-
-      button.type =
-        "button";
 
 
       button.dataset.id =
@@ -783,13 +1187,8 @@ function buildNodes() {
 
 
       /*
-        Responsive size.
-
-        The original pixel size
-        becomes the reference,
-        but the CSS will scale it
-        according to viewport.
-      */
+       * Responsive pixel size
+       */
 
       button.style.setProperty(
         "--size",
@@ -798,40 +1197,70 @@ function buildNodes() {
 
 
       button.style.setProperty(
-        "--delay",
-        `${index * -0.47}s`
+        "--node-delay",
+        `${index * -.45}s`
       );
 
 
       button.style.setProperty(
-        "--speed",
-        `${3.5 + (index % 4) * 0.65}s`
+        "--node-speed",
+        `${3.5 + index * .32}s`
       );
 
 
-      const isWhite =
-        section.color === "white";
+      /*
+       * Colors
+       */
+
+      let nodeColor;
+      let nodeText;
+
+
+      if (
+        section.color === "white"
+      ) {
+
+        nodeColor =
+          "#f4f4ef";
+
+        nodeText =
+          "#050505";
+
+      } else if (
+        section.color === "black"
+      ) {
+
+        nodeColor =
+          "#050505";
+
+        nodeText =
+          "#f4f4ef";
+
+      } else {
+
+        nodeColor =
+          "#777777";
+
+        nodeText =
+          "#f4f4ef";
+      }
 
 
       button.style.setProperty(
         "--node-color",
-
-        isWhite
-          ? "#f4f4f0"
-          : section.color === "black"
-            ? "#050505"
-            : "#777"
+        nodeColor
       );
 
 
       button.style.setProperty(
         "--node-text",
-
-        isWhite
-          ? "#050505"
-          : "#f4f4f0"
+        nodeText
       );
 
+
+      /*
+       * Label
+       */
 
       const label =
         document.createElement("span");
@@ -846,9 +1275,14 @@ function buildNodes() {
       );
 
 
+      /*
+       * Mouse hover
+       */
+
       button.addEventListener(
         "pointerenter",
         () => {
+
           button.classList.add(
             "is-hovered"
           );
@@ -859,6 +1293,7 @@ function buildNodes() {
       button.addEventListener(
         "pointerleave",
         () => {
+
           button.classList.remove(
             "is-hovered"
           );
@@ -866,9 +1301,14 @@ function buildNodes() {
       );
 
 
+      /*
+       * Click
+       */
+
       button.addEventListener(
         "click",
         () => {
+
           openSection(
             section,
             button
@@ -885,43 +1325,87 @@ function buildNodes() {
 }
 
 
-/* --------------------------------------------------
+/* =========================================================
    OPEN SECTION
--------------------------------------------------- */
+   ========================================================= */
 
 function openSection(
   section,
   button
 ) {
 
-  if (opened) return;
+  if (opened) {
+    return;
+  }
+
 
   opened = true;
 
+  activeSection =
+    section;
+
+
+  /*
+   * Get clicked pixel position
+   */
 
   const rect =
     button.getBoundingClientRect();
 
 
+  const originX =
+    rect.left +
+    rect.width / 2;
+
+
+  const originY =
+    rect.top +
+    rect.height / 2;
+
+
+  /*
+   * Set animation origin
+   */
+
   sectionSurface.style.setProperty(
     "--origin-x",
-    `${rect.left + rect.width / 2}px`
+    `${originX}px`
   );
 
 
   sectionSurface.style.setProperty(
     "--origin-y",
-    `${rect.top + rect.height / 2}px`
+    `${originY}px`
   );
 
+
+  /*
+   * Apply surface
+   */
 
   sectionSurface.className =
     `section-surface ${section.surface}`;
 
 
+  /*
+   * Section title
+   */
+
+  sectionLabel.textContent =
+    section.label;
+
+
+  /*
+   * Content
+   */
+
   sectionContent.innerHTML =
     section.content;
 
+
+  /*
+   * Open
+   */
 
   sectionLayer.classList.add(
     "open"
@@ -934,18 +1418,24 @@ function openSection(
   );
 
 
-  document.body.style.cursor =
-    "default";
+  /*
+   * Stop main interaction
+   */
+
+  document.body.style.overflow =
+    "hidden";
 }
 
 
-/* --------------------------------------------------
-   CLOSE
--------------------------------------------------- */
+/* =========================================================
+   CLOSE SECTION
+   ========================================================= */
 
 function closeSection() {
 
-  if (!opened) return;
+  if (!opened) {
+    return;
+  }
 
 
   sectionLayer.classList.remove(
@@ -961,78 +1451,27 @@ function closeSection() {
 
   opened = false;
 
+  activeSection = null;
 
-  document.body.style.cursor =
-    "crosshair";
+
+  document.body.style.overflow =
+    "hidden";
 }
 
 
-/* --------------------------------------------------
-   POINTER
--------------------------------------------------- */
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
 
-window.addEventListener(
-  "pointermove",
-  event => {
-
-    mouse.x =
-      event.clientX;
-
-    mouse.y =
-      event.clientY;
-
-    mouse.active =
-      true;
-  }
+closeButton.addEventListener(
+  "click",
+  closeSection
 );
 
 
-window.addEventListener(
-  "pointerleave",
-  () => {
-    mouse.active = false;
-  }
-);
-
-
-/* --------------------------------------------------
-   TOUCH
--------------------------------------------------- */
-
-window.addEventListener(
-  "touchmove",
-  event => {
-
-    if (
-      event.touches &&
-      event.touches.length
-    ) {
-
-      mouse.x =
-        event.touches[0].clientX;
-
-      mouse.y =
-        event.touches[0].clientY;
-
-      mouse.active =
-        true;
-    }
-  },
-  { passive: true }
-);
-
-
-window.addEventListener(
-  "touchend",
-  () => {
-    mouse.active = false;
-  }
-);
-
-
-/* --------------------------------------------------
-   KEYBOARD
--------------------------------------------------- */
+/* =========================================================
+   ESCAPE
+   ========================================================= */
 
 window.addEventListener(
   "keydown",
@@ -1041,36 +1480,46 @@ window.addEventListener(
     if (
       event.key === "Escape"
     ) {
+
       closeSection();
     }
   }
 );
 
 
-/* --------------------------------------------------
-   EVENTS
--------------------------------------------------- */
+/* =========================================================
+   RESIZE
+   ========================================================= */
 
-closeButton.addEventListener(
-  "click",
-  closeSection
-);
+let resizeTimer = null;
 
 
 window.addEventListener(
   "resize",
-  resize
+  () => {
+
+    clearTimeout(
+      resizeTimer
+    );
+
+
+    resizeTimer =
+      setTimeout(
+        resize,
+        120
+      );
+  }
 );
 
 
-/* --------------------------------------------------
-   START
--------------------------------------------------- */
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
 
 resize();
 
 buildNodes();
 
 requestAnimationFrame(
-  drawField
+  animate
 );
