@@ -5,15 +5,15 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
   >
+
+  <title>Esra Töle — Pixel Portfolio</title>
 
   <meta
     name="description"
     content="Esra Töle — Landscape Architecture / Digital Spatial Practice"
   >
-
-  <title>Esra Töle — Pixel Portfolio</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,10 +30,9 @@
 
   <main id="app">
 
-    <!-- MAIN VISUAL FIELD -->
     <canvas id="pixelCanvas"></canvas>
 
-    <!-- CRT LAYERS -->
+    <!-- CRT / BROKEN SCREEN LAYERS -->
     <div class="crt-noise"></div>
     <div class="crt-scanlines"></div>
     <div class="crt-vignette"></div>
@@ -41,37 +40,56 @@
     <!-- HEADER -->
     <header class="identity">
       <span>ESRA TÖLE</span>
-      <span>LANDSCAPE ARCHITECTURE / DIGITAL SPATIAL PRACTICE</span>
+
+      <span>
+        LANDSCAPE ARCHITECTURE / DIGITAL SPATIAL PRACTICE
+      </span>
     </header>
 
-    <!-- INTERACTIVE MENU -->
+
+    <!-- INTERACTIVE PIXELS -->
     <nav
       id="pixelNodes"
       class="pixel-nodes"
       aria-label="Portfolio sections"
     ></nav>
 
-    <!-- BOTTOM INFO -->
+
+    <!-- BOTTOM TEXT -->
     <div class="hint">
-      <span class="desktop-hint">MOVE / EXPLORE / ENTER</span>
-      <span class="mobile-hint">TOUCH / EXPLORE / ENTER</span>
+      <span class="desktop-hint">
+        MOVE / EXPLORE / ENTER
+      </span>
+
+      <span class="mobile-hint">
+        TOUCH / EXPLORE / ENTER
+      </span>
     </div>
 
   </main>
 
 
-  <!-- FULLSCREEN CONTENT -->
+  <!-- =====================================================
+       POPUP
+       ===================================================== -->
+
   <section
     id="sectionLayer"
     class="section-layer"
     aria-hidden="true"
   >
 
-    <div id="sectionSurface" class="section-surface">
+    <div
+      id="sectionSurface"
+      class="section-surface"
+    >
 
       <div class="section-topbar">
 
-        <div id="sectionLabel" class="section-label">
+        <div
+          id="sectionLabel"
+          class="section-label"
+        >
           SECTION
         </div>
 
@@ -79,12 +97,13 @@
           id="closeButton"
           class="close-button"
           type="button"
-          aria-label="Back to portfolio"
+          aria-label="Close"
         >
-          × BACK
+          ×
         </button>
 
       </div>
+
 
       <div
         id="sectionContent"
