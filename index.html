@@ -1,36 +1,102 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pixel Portfolio — Esra Töle</title>
-  <meta name="description" content="Experimental pixel-based portfolio." />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main id="app" class="app">
-    <canvas id="pixelCanvas" aria-hidden="true"></canvas>
-    <div class="crt-vignette" aria-hidden="true"></div>
-    <div class="crt-scanlines" aria-hidden="true"></div>
-    <div class="crt-noise" aria-hidden="true"></div>
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="description"
+    content="Esra Töle — Landscape Architecture / Digital Spatial Practice"
+  >
+
+  <title>Esra Töle — Pixel Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <main id="app">
+
+    <!-- MAIN VISUAL FIELD -->
+    <canvas id="pixelCanvas"></canvas>
+
+    <!-- CRT LAYERS -->
+    <div class="crt-noise"></div>
+    <div class="crt-scanlines"></div>
+    <div class="crt-vignette"></div>
+
+    <!-- HEADER -->
     <header class="identity">
       <span>ESRA TÖLE</span>
       <span>LANDSCAPE ARCHITECTURE / DIGITAL SPATIAL PRACTICE</span>
     </header>
 
-    <section id="pixelNodes" class="pixel-nodes" aria-label="Portfolio sections"></section>
+    <!-- INTERACTIVE MENU -->
+    <nav
+      id="pixelNodes"
+      class="pixel-nodes"
+      aria-label="Portfolio sections"
+    ></nav>
 
-    <div class="hint">MOVE / EXPLORE / ENTER</div>
+    <!-- BOTTOM INFO -->
+    <div class="hint">
+      <span class="desktop-hint">MOVE / EXPLORE / ENTER</span>
+      <span class="mobile-hint">TOUCH / EXPLORE / ENTER</span>
+    </div>
+
   </main>
 
-  <div id="sectionLayer" class="section-layer" aria-hidden="true">
+
+  <!-- FULLSCREEN CONTENT -->
+  <section
+    id="sectionLayer"
+    class="section-layer"
+    aria-hidden="true"
+  >
+
     <div id="sectionSurface" class="section-surface">
-      <button id="closeButton" class="close-button" type="button" aria-label="Close section">× BACK</button>
-      <div id="sectionContent" class="section-content"></div>
+
+      <div class="section-topbar">
+
+        <div id="sectionLabel" class="section-label">
+          SECTION
+        </div>
+
+        <button
+          id="closeButton"
+          class="close-button"
+          type="button"
+          aria-label="Back to portfolio"
+        >
+          × BACK
+        </button>
+
+      </div>
+
+      <div
+        id="sectionContent"
+        class="section-content"
+      ></div>
+
     </div>
-  </div>
+
+  </section>
+
 
   <script src="app.js"></script>
+
 </body>
 </html>
