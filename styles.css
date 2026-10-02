@@ -1,16 +1,15 @@
 /* =========================================================
-   PIXEL PORTFOLIO
-   ESRA TÖLE
+   ESRA TÖLE — PIXEL PORTFOLIO
    ========================================================= */
 
 :root {
-  --black: #020202;
-  --deep-black: #000000;
-  --white: #f4f4ef;
-  --gray: #777777;
-  --paper: #eeeeE8;
 
-  --ui-size: 11px;
+  --black: #020202;
+  --deep-black: #000;
+
+  --white: #f4f4ef;
+  --gray: #777;
+  --paper: #eeeeE8;
 
   --ease: cubic-bezier(.76, 0, .24, 1);
 }
@@ -32,16 +31,20 @@ body {
   padding: 0;
 }
 
-html {
-  background: #000;
-}
-
 body {
+
   overflow: hidden;
+
   background: #000;
+
   color: var(--white);
-  font-family: "Space Mono", monospace;
+
+  font-family:
+    "Space Mono",
+    monospace;
+
   -webkit-font-smoothing: none;
+
   text-rendering: geometricPrecision;
 }
 
@@ -49,19 +52,17 @@ button {
   font: inherit;
 }
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
 
 /* =========================================================
-   MAIN APPLICATION
+   APP
    ========================================================= */
 
 #app {
+
   position: fixed;
+
   inset: 0;
+
   width: 100%;
   height: 100%;
 
@@ -70,9 +71,9 @@ a {
   background:
     radial-gradient(
       circle at 50% 45%,
-      #181818 0%,
+      #1a1a1a 0%,
       #0b0b0b 38%,
-      #030303 78%,
+      #020202 75%,
       #000 100%
     );
 
@@ -87,13 +88,15 @@ a {
    ========================================================= */
 
 #pixelCanvas {
-  position: absolute;
-  inset: 0;
 
-  display: block;
+  position: absolute;
+
+  inset: 0;
 
   width: 100%;
   height: 100%;
+
+  display: block;
 
   z-index: 1;
 
@@ -102,49 +105,41 @@ a {
 
 
 /* =========================================================
-   CRT STATIC
+   CRT NOISE
    ========================================================= */
 
-.crt-noise,
-.crt-scanlines,
-.crt-vignette {
+.crt-noise {
+
   position: absolute;
-  inset: 0;
+
+  inset: -20px;
+
+  z-index: 4;
 
   pointer-events: none;
-}
 
-
-/*
-   VERY VISIBLE MOVING STATIC
-*/
-
-.crt-noise {
-  z-index: 3;
-
-  opacity: .34;
+  opacity: .42;
 
   mix-blend-mode: screen;
 
   background-image:
+
     repeating-radial-gradient(
-      circle at 17% 29%,
+      circle at 15% 25%,
       rgba(255,255,255,.9) 0 1px,
       transparent 1px 3px
     ),
 
     repeating-radial-gradient(
-      circle at 74% 66%,
+      circle at 80% 70%,
       rgba(255,255,255,.65) 0 1px,
       transparent 1px 4px
     ),
 
     repeating-linear-gradient(
       0deg,
-      rgba(255,255,255,.08) 0,
-      rgba(255,255,255,.08) 1px,
-      transparent 1px,
-      transparent 3px
+      rgba(255,255,255,.10) 0 1px,
+      transparent 1px 3px
     );
 
   background-size:
@@ -153,47 +148,74 @@ a {
     100% 4px;
 
   animation:
-    crtNoiseA .12s steps(2) infinite,
-    crtNoiseB .22s steps(3) infinite;
+    staticJump .11s steps(3) infinite,
+    staticShift .19s steps(4) infinite;
 }
 
 
-@keyframes crtNoiseA {
+@keyframes staticJump {
 
   0% {
-    transform: translate(0, 0);
+    transform: translate(0,0);
+  }
+
+  20% {
+    transform: translate(-5px,2px);
+  }
+
+  40% {
+    transform: translate(3px,-4px);
+  }
+
+  60% {
+    transform: translate(5px,3px);
+  }
+
+  80% {
+    transform: translate(-3px,-2px);
+  }
+
+  100% {
+    transform: translate(2px,4px);
+  }
+}
+
+
+@keyframes staticShift {
+
+  0% {
+    background-position:
+      0 0,
+      0 0,
+      0 0;
   }
 
   25% {
-    transform: translate(-3px, 2px);
+    background-position:
+      15px -9px,
+      -8px 12px,
+      0 3px;
   }
 
   50% {
-    transform: translate(2px, -2px);
+    background-position:
+      -12px 8px,
+      13px -7px,
+      0 -4px;
   }
 
   75% {
-    transform: translate(1px, 3px);
+    background-position:
+      7px 14px,
+      -14px -3px,
+      0 5px;
   }
 
   100% {
-    transform: translate(-2px, -1px);
-  }
-}
-
-
-@keyframes crtNoiseB {
-
-  0% {
-    background-position: 0 0, 0 0, 0 0;
-  }
-
-  50% {
-    background-position: 13px -8px, -7px 11px, 0 3px;
-  }
-
-  100% {
-    background-position: -8px 12px, 14px -6px, 0 -2px;
+    background-position:
+      -10px -8px,
+      9px 11px,
+      0 -2px;
   }
 }
 
@@ -203,24 +225,32 @@ a {
    ========================================================= */
 
 .crt-scanlines {
-  z-index: 4;
 
-  opacity: .16;
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 5;
+
+  pointer-events: none;
+
+  opacity: .20;
 
   background:
     repeating-linear-gradient(
       to bottom,
       transparent 0,
       transparent 2px,
-      rgba(255,255,255,.18) 3px,
+      rgba(255,255,255,.22) 3px,
       transparent 4px
     );
 
-  animation: scanMove .7s linear infinite;
+  animation:
+    scanlines .55s linear infinite;
 }
 
 
-@keyframes scanMove {
+@keyframes scanlines {
 
   from {
     transform: translateY(0);
@@ -237,14 +267,21 @@ a {
    ========================================================= */
 
 .crt-vignette {
-  z-index: 5;
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 6;
+
+  pointer-events: none;
 
   background:
     radial-gradient(
       ellipse at center,
-      transparent 35%,
-      rgba(0,0,0,.15) 60%,
-      rgba(0,0,0,.72) 100%
+      transparent 28%,
+      rgba(0,0,0,.16) 55%,
+      rgba(0,0,0,.78) 100%
     );
 }
 
@@ -254,26 +291,33 @@ a {
    ========================================================= */
 
 .identity {
+
   position: absolute;
 
-  top: max(20px, env(safe-area-inset-top));
+  top: max(
+    20px,
+    env(safe-area-inset-top)
+  );
+
   left: 24px;
   right: 24px;
 
-  z-index: 20;
+  z-index: 30;
 
   display: flex;
+
   justify-content: space-between;
-  align-items: flex-start;
 
   gap: 30px;
 
   pointer-events: none;
 
   font-size: 10px;
+
   line-height: 1.4;
 
   letter-spacing: .08em;
+
   text-transform: uppercase;
 
   mix-blend-mode: difference;
@@ -281,71 +325,78 @@ a {
   user-select: none;
 }
 
-
 .identity span:last-child {
   text-align: right;
 }
 
 
 /* =========================================================
-   MENU NODE LAYER
+   PIXEL NODE LAYER
    ========================================================= */
 
 .pixel-nodes {
+
   position: absolute;
+
   inset: 0;
 
-  z-index: 30;
+  z-index: 40;
 
   pointer-events: none;
 }
 
 
 /* =========================================================
-   MENU PIXELS
+   INFORMATION PIXELS
    ========================================================= */
 
 .pixel-node {
-  --size: 70px;
+
+  --size: 76px;
 
   position: absolute;
 
   width: var(--size);
   height: var(--size);
 
-  min-width: 56px;
-  min-height: 56px;
+  min-width: 58px;
+  min-height: 58px;
 
-  margin: 0;
-  padding: 7px;
+  transform:
+    translate(-50%, -50%)
+    scale(1);
 
   border: 0;
 
+  padding: 7px;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   background: var(--node-color);
+
   color: var(--node-text);
 
   cursor: pointer;
 
   pointer-events: auto;
 
-  transform:
-    translate(-50%, -50%)
-    scale(1);
-
-  transition:
-    transform .18s ease,
-    filter .18s ease,
-    box-shadow .18s ease;
-
-  animation:
-    nodeFloat var(--node-speed) ease-in-out var(--node-delay) infinite alternate;
-
   box-shadow:
     0 0 0 1px rgba(255,255,255,.12);
+
+  animation:
+    nodeFloat
+    var(--node-speed)
+    ease-in-out
+    var(--node-delay)
+    infinite alternate;
+
+  transition:
+    transform .16s ease,
+    filter .16s ease,
+    box-shadow .16s ease;
 
   touch-action: manipulation;
 
@@ -353,15 +404,20 @@ a {
 }
 
 
+/* pixel internal structure */
+
 .pixel-node::before {
+
   content: "";
 
   position: absolute;
+
   inset: 0;
 
   pointer-events: none;
 
   background:
+
     linear-gradient(
       90deg,
       transparent 0 47%,
@@ -376,19 +432,23 @@ a {
       transparent 53%
     );
 
-  opacity: .12;
+  opacity: .13;
 
   mix-blend-mode: difference;
 }
 
 
 .pixel-node::after {
+
   content: "";
 
   position: absolute;
+
   inset: 3px;
 
-  border: 1px solid rgba(255,255,255,.08);
+  border:
+    1px solid
+    rgba(255,255,255,.10);
 
   pointer-events: none;
 }
@@ -399,19 +459,23 @@ a {
    ========================================================= */
 
 .pixel-node span {
+
   position: relative;
 
   z-index: 2;
-
-  display: block;
 
   width: 100%;
 
   text-align: center;
 
-  font-size: clamp(8px, .72vw, 12px);
+  font-size:
+    clamp(
+      8px,
+      .78vw,
+      12px
+    );
 
-  line-height: 1.1;
+  line-height: 1.05;
 
   font-weight: 700;
 
@@ -420,10 +484,6 @@ a {
   text-transform: uppercase;
 
   white-space: normal;
-
-  overflow-wrap: normal;
-
-  word-break: normal;
 
   user-select: none;
 
@@ -436,11 +496,12 @@ a {
    ========================================================= */
 
 .pixel-node:hover {
+
   z-index: 100;
 
   transform:
     translate(-50%, -50%)
-    scale(1.25);
+    scale(1.22);
 
   filter:
     brightness(1.25)
@@ -448,30 +509,27 @@ a {
 
   box-shadow:
     0 0 0 2px currentColor,
-    0 0 25px rgba(255,255,255,.28);
+    0 0 30px rgba(255,255,255,.25);
 
   animation-play-state: paused;
 }
 
 
 .pixel-node:active {
+
   transform:
     translate(-50%, -50%)
-    scale(.94);
+    scale(.92);
 }
 
 
-/* =========================================================
-   NODE FLOAT
-   ========================================================= */
-
 @keyframes nodeFloat {
 
-  0% {
+  from {
     margin-top: -5px;
   }
 
-  100% {
+  to {
     margin-top: 5px;
   }
 }
@@ -482,22 +540,26 @@ a {
    ========================================================= */
 
 .hint {
+
   position: absolute;
 
   left: 24px;
-  bottom: max(18px, env(safe-area-inset-bottom));
 
-  z-index: 20;
+  bottom:
+    max(
+      18px,
+      env(safe-area-inset-bottom)
+    );
+
+  z-index: 30;
 
   font-size: 9px;
 
   letter-spacing: .08em;
 
-  opacity: .6;
+  opacity: .55;
 
   pointer-events: none;
-
-  text-transform: uppercase;
 
   mix-blend-mode: difference;
 }
@@ -509,11 +571,13 @@ a {
 
 
 /* =========================================================
-   FULLSCREEN SECTION
+   POPUP LAYER
    ========================================================= */
 
 .section-layer {
+
   position: fixed;
+
   inset: 0;
 
   z-index: 500;
@@ -527,6 +591,7 @@ a {
 
 
 .section-layer.open {
+
   visibility: visible;
 
   pointer-events: auto;
@@ -534,220 +599,215 @@ a {
 
 
 /* =========================================================
-   SECTION SURFACE
+   POPUP WINDOW
    ========================================================= */
 
 .section-surface {
-  position: absolute;
 
-  inset: 0;
+  position: fixed;
 
-  width: 100%;
-  height: 100%;
+  left: 50%;
+  top: 50%;
+
+  width:
+    min(
+      620px,
+      calc(100vw - 40px)
+    );
+
+  max-height:
+    min(
+      72vh,
+      720px
+    );
 
   overflow: hidden;
 
-  background: var(--surface-color);
-  color: var(--surface-text);
+  background:
+    var(--surface-color);
 
-  clip-path:
-    circle(
-      0px at
-      var(--origin-x, 50%)
-      var(--origin-y, 50%)
-    );
+  color:
+    var(--surface-text);
+
+  border:
+    1px solid
+    rgba(255,255,255,.25);
+
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.35),
+    0 20px 70px rgba(0,0,0,.65);
+
+  opacity: 0;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.12);
+
+  transform-origin:
+    var(--origin-x, 50%)
+    var(--origin-y, 50%);
 
   transition:
-    clip-path 800ms var(--ease);
+    transform .28s var(--ease),
+    opacity .18s ease;
 
-  isolation: isolate;
+  will-change:
+    transform,
+    opacity;
 }
 
 
 .section-layer.open .section-surface {
-  clip-path:
-    circle(
-      150vmax at
-      var(--origin-x, 50%)
-      var(--origin-y, 50%)
-    );
+
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
 }
 
 
 /* =========================================================
-   SECTION COLORS
+   POPUP COLORS
    ========================================================= */
 
 .section-surface.paper {
-  --surface-color: var(--paper);
+
+  --surface-color: #eeeeE8;
+
   --surface-text: #050505;
 }
 
 
 .section-surface.black {
+
   --surface-color: #050505;
+
   --surface-text: #f4f4ef;
 }
 
 
 .section-surface.gray {
+
   --surface-color: #6d6d6d;
+
   --surface-text: #f4f4ef;
 }
 
 
 /* =========================================================
-   TOP BAR
+   POPUP TOPBAR
    ========================================================= */
 
 .section-topbar {
-  position: absolute;
 
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
 
-  z-index: 1000;
+  z-index: 10;
 
   display: flex;
 
   justify-content: space-between;
+
   align-items: flex-start;
 
-  padding:
-    max(22px, env(safe-area-inset-top))
-    26px
-    0;
+  padding: 18px 18px 0;
 }
 
 
 .section-label {
-  padding-top: 4px;
 
-  font-size: 10px;
+  font-size: 9px;
 
   letter-spacing: .08em;
 
   text-transform: uppercase;
 
-  opacity: .65;
+  opacity: .6;
 }
 
 
 /* =========================================================
-   BACK BUTTON
+   CLOSE BUTTON
    ========================================================= */
 
 .close-button {
-  position: relative;
 
-  z-index: 1001;
+  width: 32px;
+  height: 32px;
 
-  display: block;
+  padding: 0;
 
-  appearance: none;
+  border:
+    1px solid currentColor;
 
-  border: 1px solid currentColor;
+  background:
+    var(--surface-color);
 
-  outline: none;
-
-  background: var(--surface-color);
-
-  color: var(--surface-text);
-
-  padding: 10px 13px;
-
-  min-width: 82px;
+  color:
+    var(--surface-text);
 
   cursor: pointer;
 
-  font-size: 10px;
+  display: flex;
 
-  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
 
   line-height: 1;
 
-  letter-spacing: .06em;
-
-  text-transform: uppercase;
-
-  opacity: 1;
-
-  visibility: visible;
-
   transition:
-    background .15s linear,
-    color .15s linear;
+    background .12s linear,
+    color .12s linear;
 }
 
 
 .close-button:hover {
-  background: var(--surface-text);
 
-  color: var(--surface-color);
-}
+  background:
+    var(--surface-text);
 
-
-.close-button:active {
-  transform: scale(.96);
+  color:
+    var(--surface-color);
 }
 
 
 /* =========================================================
-   CONTENT
+   POPUP CONTENT
    ========================================================= */
 
 .section-content {
-  position: absolute;
 
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
+  max-height:
+    calc(
+      min(72vh, 720px) - 55px
+    );
 
   overflow-y: auto;
+
   overflow-x: hidden;
 
-  overscroll-behavior: contain;
-
   padding:
-    120px
-    max(28px, 5vw)
-    80px;
-
-  opacity: 0;
-
-  transform: translateY(20px);
-
-  transition:
-    opacity .35s ease .45s,
-    transform .5s ease .45s;
+    22px
+    28px
+    32px;
 
   -webkit-overflow-scrolling: touch;
 }
 
 
-.section-layer.open .section-content {
-  opacity: 1;
-
-  transform: translateY(0);
-}
-
-
-/* =========================================================
-   CONTENT TYPOGRAPHY
-   ========================================================= */
-
 .section-content h1 {
-  margin: 0 0 55px;
 
-  max-width: 1200px;
+  margin:
+    0 0 35px;
 
   font-size:
     clamp(
       48px,
-      10vw,
-      150px
+      8vw,
+      100px
     );
 
   line-height: .82;
@@ -759,11 +819,11 @@ a {
 
 
 .section-content h2 {
-  margin: 0 0 14px;
 
-  font-size: 14px;
+  margin:
+    0 0 12px;
 
-  line-height: 1.2;
+  font-size: 13px;
 
   letter-spacing: .08em;
 
@@ -771,54 +831,44 @@ a {
 }
 
 
-.section-content p,
-.section-content li {
-  max-width: 760px;
+.section-content p {
 
-  margin-top: 0;
+  max-width: 650px;
 
-  font-size: 14px;
+  margin:
+    0 0 20px;
 
-  line-height: 1.8;
+  font-size: 13px;
+
+  line-height: 1.75;
 }
 
 
 .section-content a {
+
   color: inherit;
 
-  text-decoration-thickness: 1px;
-
-  text-underline-offset: 5px;
+  text-underline-offset: 4px;
 }
 
 
-/* =========================================================
-   CONTENT GRID
-   ========================================================= */
-
 .content-grid {
+
   display: grid;
 
   grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 1fr);
+    1fr
+    1fr;
 
-  gap: 70px;
-
-  max-width: 1200px;
+  gap: 45px;
 }
 
 
-/* =========================================================
-   WORK ITEMS
-   ========================================================= */
-
 .work {
-  max-width: 1000px;
 
-  padding-top: 18px;
+  padding-top: 14px;
 
-  margin-bottom: 38px;
+  margin-bottom: 28px;
 
   border-top:
     1px solid currentColor;
@@ -826,13 +876,12 @@ a {
 
 
 .work strong {
+
   display: block;
 
-  margin-bottom: 10px;
+  margin-bottom: 7px;
 
-  font-size: 15px;
-
-  letter-spacing: .02em;
+  font-size: 13px;
 }
 
 
@@ -841,14 +890,12 @@ a {
    ========================================================= */
 
 .section-content::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
-
 
 .section-content::-webkit-scrollbar-track {
   background: transparent;
 }
-
 
 .section-content::-webkit-scrollbar-thumb {
   background: currentColor;
@@ -861,24 +908,22 @@ a {
 
 @media (max-width: 700px) {
 
-  #app {
-    cursor: default;
-  }
-
-
   .identity {
-    top: max(15px, env(safe-area-inset-top));
+
+    top:
+      max(
+        14px,
+        env(safe-area-inset-top)
+      );
 
     left: 16px;
     right: 16px;
 
-    gap: 4px;
-
     flex-direction: column;
 
-    font-size: 8px;
+    gap: 4px;
 
-    line-height: 1.35;
+    font-size: 8px;
   }
 
 
@@ -888,23 +933,15 @@ a {
 
 
   .pixel-node {
-    min-width: 58px;
-    min-height: 58px;
+
+    min-width: 56px;
+    min-height: 56px;
 
     padding: 6px;
   }
 
 
   .pixel-node span {
-    font-size: 8px;
-
-    line-height: 1.05;
-  }
-
-
-  .hint {
-    left: 16px;
-
     font-size: 8px;
   }
 
@@ -919,78 +956,90 @@ a {
   }
 
 
-  .section-topbar {
-    padding:
-      max(16px, env(safe-area-inset-top))
-      16px
-      0;
-  }
+  .hint {
 
+    left: 16px;
 
-  .section-label {
     font-size: 8px;
   }
 
 
-  .close-button {
-    min-width: 78px;
+  .section-surface {
 
-    padding: 10px 11px;
+    width:
+      calc(
+        100vw - 28px
+      );
 
-    font-size: 9px;
-  }
-
-
-  .section-content {
-    padding:
-      90px
-      20px
-      max(50px, env(safe-area-inset-bottom));
-  }
-
-
-  .section-content h1 {
-    margin-bottom: 38px;
-
-    font-size:
-      clamp(
-        44px,
-        15vw,
-        90px
+    max-height:
+      calc(
+        100dvh - 70px
       );
   }
 
 
-  .section-content h2 {
-    font-size: 12px;
+  .section-topbar {
+    padding:
+      14px
+      14px
+      0;
   }
 
 
-  .section-content p,
-  .section-content li {
-    font-size: 13px;
+  .section-content {
 
-    line-height: 1.75;
+    max-height:
+      calc(
+        100dvh - 120px
+      );
+
+    padding:
+      20px
+      18px
+      28px;
+  }
+
+
+  .section-content h1 {
+
+    margin-bottom: 28px;
+
+    font-size:
+      clamp(
+        42px,
+        15vw,
+        80px
+      );
+  }
+
+
+  .section-content p {
+
+    font-size: 12px;
+
+    line-height: 1.7;
   }
 
 
   .content-grid {
+
     grid-template-columns: 1fr;
 
-    gap: 35px;
+    gap: 25px;
   }
 }
 
 
 /* =========================================================
-   SMALL PHONES
+   VERY SMALL PHONES
    ========================================================= */
 
 @media (max-width: 390px) {
 
   .pixel-node {
-    min-width: 52px;
-    min-height: 52px;
+
+    min-width: 51px;
+    min-height: 51px;
   }
 
 
@@ -999,9 +1048,12 @@ a {
   }
 
 
-  .section-content {
-    padding-left: 17px;
-    padding-right: 17px;
+  .section-surface {
+
+    width:
+      calc(
+        100vw - 20px
+      );
   }
 }
 
@@ -1015,11 +1067,12 @@ a {
   .crt-noise,
   .crt-scanlines,
   .pixel-node {
+
     animation: none !important;
   }
 
-  .section-surface,
-  .section-content {
+  .section-surface {
+
     transition: none !important;
   }
 }
