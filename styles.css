@@ -1,14 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+/* =========================================================
+   PIXEL PORTFOLIO
+   ESRA TÖLE
+   ========================================================= */
 
 :root {
-  --black: #050505;
-  --white: #f4f4f0;
-  --gray: #858585;
-  --paper: #f1f1ec;
+  --black: #020202;
+  --deep-black: #000000;
+  --white: #f4f4ef;
+  --gray: #777777;
+  --paper: #eeeeE8;
 
-  --transition:
-    720ms cubic-bezier(.76, 0, .24, 1);
+  --ui-size: 11px;
+
+  --ease: cubic-bezier(.76, 0, .24, 1);
 }
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
 
 * {
   box-sizing: border-box;
@@ -19,108 +29,122 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  overflow: hidden;
+  padding: 0;
+}
 
-  background: var(--black);
-  color: var(--white);
-
-  font-family: "Space Mono", monospace;
+html {
+  background: #000;
 }
 
 body {
-  overscroll-behavior: none;
+  overflow: hidden;
+  background: #000;
+  color: var(--white);
+  font-family: "Space Mono", monospace;
+  -webkit-font-smoothing: none;
+  text-rendering: geometricPrecision;
 }
 
 button {
   font: inherit;
 }
 
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* =====================================================
-   MAIN FIELD
-===================================================== */
 
-.app {
+/* =========================================================
+   MAIN APPLICATION
+   ========================================================= */
+
+#app {
   position: fixed;
   inset: 0;
-
-  width: 100vw;
-  height: 100dvh;
+  width: 100%;
+  height: 100%;
 
   overflow: hidden;
 
   background:
     radial-gradient(
-      circle at 50% 50%,
+      circle at 50% 45%,
       #181818 0%,
-      #090909 48%,
-      #020202 100%
+      #0b0b0b 38%,
+      #030303 78%,
+      #000 100%
     );
 
   cursor: crosshair;
+
+  isolation: isolate;
 }
 
 
-/* =====================================================
-   PIXEL CANVAS
-===================================================== */
+/* =========================================================
+   CANVAS
+   ========================================================= */
 
 #pixelCanvas {
   position: absolute;
-
   inset: 0;
+
+  display: block;
 
   width: 100%;
   height: 100%;
 
-  display: block;
+  z-index: 1;
 
   image-rendering: pixelated;
-
-  pointer-events: none;
 }
 
 
-/* =====================================================
-   CRT EFFECT
-===================================================== */
+/* =========================================================
+   CRT STATIC
+   ========================================================= */
 
 .crt-noise,
 .crt-scanlines,
 .crt-vignette {
   position: absolute;
-
   inset: 0;
 
   pointer-events: none;
 }
 
 
-/* Fine moving television static */
+/*
+   VERY VISIBLE MOVING STATIC
+*/
 
 .crt-noise {
-  z-index: 2;
+  z-index: 3;
 
-  opacity: .105;
+  opacity: .34;
 
   mix-blend-mode: screen;
 
   background-image:
     repeating-radial-gradient(
-      circle at 17% 31%,
+      circle at 17% 29%,
       rgba(255,255,255,.9) 0 1px,
       transparent 1px 3px
     ),
+
     repeating-radial-gradient(
-      circle at 83% 67%,
-      rgba(170,170,170,.7) 0 1px,
+      circle at 74% 66%,
+      rgba(255,255,255,.65) 0 1px,
       transparent 1px 4px
     ),
+
     repeating-linear-gradient(
       0deg,
-      transparent 0px,
+      rgba(255,255,255,.08) 0,
       rgba(255,255,255,.08) 1px,
-      transparent 2px
+      transparent 1px,
+      transparent 3px
     );
 
   background-size:
@@ -129,353 +153,370 @@ button {
     100% 4px;
 
   animation:
-    noiseShift
-    150ms
-    steps(2)
-    infinite;
+    crtNoiseA .12s steps(2) infinite,
+    crtNoiseB .22s steps(3) infinite;
 }
 
 
-/* CRT horizontal lines */
+@keyframes crtNoiseA {
+
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(-3px, 2px);
+  }
+
+  50% {
+    transform: translate(2px, -2px);
+  }
+
+  75% {
+    transform: translate(1px, 3px);
+  }
+
+  100% {
+    transform: translate(-2px, -1px);
+  }
+}
+
+
+@keyframes crtNoiseB {
+
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+
+  50% {
+    background-position: 13px -8px, -7px 11px, 0 3px;
+  }
+
+  100% {
+    background-position: -8px 12px, 14px -6px, 0 -2px;
+  }
+}
+
+
+/* =========================================================
+   SCANLINES
+   ========================================================= */
 
 .crt-scanlines {
-  z-index: 3;
+  z-index: 4;
 
-  opacity: .065;
+  opacity: .16;
 
   background:
     repeating-linear-gradient(
       to bottom,
-      transparent 0px,
+      transparent 0,
       transparent 2px,
-      rgba(255,255,255,.32) 3px,
+      rgba(255,255,255,.18) 3px,
       transparent 4px
     );
 
-  mix-blend-mode: screen;
+  animation: scanMove .7s linear infinite;
 }
 
 
-/* Dark edges */
+@keyframes scanMove {
+
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(4px);
+  }
+}
+
+
+/* =========================================================
+   CRT VIGNETTE
+   ========================================================= */
 
 .crt-vignette {
-  z-index: 4;
+  z-index: 5;
 
   background:
     radial-gradient(
       ellipse at center,
-      transparent 42%,
-      rgba(0,0,0,.20) 70%,
+      transparent 35%,
+      rgba(0,0,0,.15) 60%,
       rgba(0,0,0,.72) 100%
     );
 }
 
 
-@keyframes noiseShift {
-
-  0% {
-    transform:
-      translate(0, 0);
-  }
-
-  20% {
-    transform:
-      translate(-2px, 1px);
-  }
-
-  40% {
-    transform:
-      translate(1px, -2px);
-  }
-
-  60% {
-    transform:
-      translate(2px, 2px);
-  }
-
-  80% {
-    transform:
-      translate(-1px, -1px);
-  }
-
-  100% {
-    transform:
-      translate(1px, 0);
-  }
-}
-
-
-/* =====================================================
-   TOP IDENTITY
-===================================================== */
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .identity {
   position: absolute;
 
-  top: 22px;
-  left: 26px;
-  right: 26px;
+  top: max(20px, env(safe-area-inset-top));
+  left: 24px;
+  right: 24px;
 
-  z-index: 10;
+  z-index: 20;
 
   display: flex;
-
   justify-content: space-between;
+  align-items: flex-start;
 
-  gap: 20px;
+  gap: 30px;
+
+  pointer-events: none;
 
   font-size: 10px;
-
   line-height: 1.4;
 
   letter-spacing: .08em;
-
   text-transform: uppercase;
 
-  pointer-events: none;
-
   mix-blend-mode: difference;
+
+  user-select: none;
 }
 
 
-/* =====================================================
-   PIXEL NODE FIELD
-===================================================== */
+.identity span:last-child {
+  text-align: right;
+}
+
+
+/* =========================================================
+   MENU NODE LAYER
+   ========================================================= */
 
 .pixel-nodes {
   position: absolute;
-
   inset: 0;
 
-  z-index: 8;
+  z-index: 30;
 
   pointer-events: none;
 }
 
 
-/* =====================================================
-   INFORMATION PIXELS
-===================================================== */
+/* =========================================================
+   MENU PIXELS
+   ========================================================= */
 
 .pixel-node {
-  --size: 34px;
-  --delay: 0s;
+  --size: 70px;
 
   position: absolute;
 
   width: var(--size);
   height: var(--size);
 
-  min-width: 24px;
-  min-height: 24px;
+  min-width: 56px;
+  min-height: 56px;
 
-  transform:
-    translate(-50%, -50%);
+  margin: 0;
+  padding: 7px;
 
   border: 0;
 
-  padding: 0;
-
-  background:
-    var(--node-color);
-
-  color:
-    var(--node-text);
-
   display: flex;
-
   align-items: center;
   justify-content: center;
 
+  background: var(--node-color);
+  color: var(--node-text);
+
   cursor: pointer;
 
-  image-rendering: pixelated;
-
-  box-shadow:
-    0 0 0 1px
-    rgba(255,255,255,.08);
-
-  animation:
-    breathe
-    var(--speed, 4.8s)
-    ease-in-out
-    var(--delay)
-    infinite
-    alternate;
-
-  transition:
-    transform 220ms steps(3),
-    filter 220ms linear,
-    box-shadow 220ms linear;
-  
   pointer-events: auto;
 
-  /*
-    IMPORTANT:
-    yazının pikselle birlikte
-    kaybolmasını engeller.
-  */
+  transform:
+    translate(-50%, -50%)
+    scale(1);
 
-  overflow: visible;
+  transition:
+    transform .18s ease,
+    filter .18s ease,
+    box-shadow .18s ease;
+
+  animation:
+    nodeFloat var(--node-speed) ease-in-out var(--node-delay) infinite alternate;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.12);
+
+  touch-action: manipulation;
+
+  image-rendering: pixelated;
 }
 
-
-/* Pixel texture */
 
 .pixel-node::before {
   content: "";
 
   position: absolute;
-
   inset: 0;
 
-  opacity: .20;
+  pointer-events: none;
 
   background:
     linear-gradient(
       90deg,
-      transparent 0 46%,
-      currentColor 47% 53%,
-      transparent 54%
+      transparent 0 47%,
+      currentColor 48% 52%,
+      transparent 53%
     ),
+
     linear-gradient(
       0deg,
-      transparent 0 46%,
-      currentColor 47% 53%,
-      transparent 54%
+      transparent 0 47%,
+      currentColor 48% 52%,
+      transparent 53%
     );
 
+  opacity: .12;
+
   mix-blend-mode: difference;
+}
+
+
+.pixel-node::after {
+  content: "";
+
+  position: absolute;
+  inset: 3px;
+
+  border: 1px solid rgba(255,255,255,.08);
 
   pointer-events: none;
 }
 
 
-/* =====================================================
-   PIXEL LABEL
-===================================================== */
+/* =========================================================
+   NODE TEXT
+   ========================================================= */
 
 .pixel-node span {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  transform:
-    translate(-50%, -50%);
+  position: relative;
 
   z-index: 2;
 
-  /*
-    Yazıyı pikselin içinde
-    tutuyoruz ama okunabilirliği
-    koruyoruz.
-  */
+  display: block;
 
-  width: max-content;
-
-  max-width:
-    max(100px, calc(var(--size) * 5));
-
-  padding:
-    3px 5px;
-
-  font-size:
-    clamp(7px, .72vw, 11px);
-
-  line-height: 1.05;
-
-  font-weight: 700;
-
-  letter-spacing: .045em;
+  width: 100%;
 
   text-align: center;
 
+  font-size: clamp(8px, .72vw, 12px);
+
+  line-height: 1.1;
+
+  font-weight: 700;
+
+  letter-spacing: .035em;
+
   text-transform: uppercase;
 
-  white-space: nowrap;
+  white-space: normal;
 
-  color:
-    var(--node-text);
+  overflow-wrap: normal;
 
-  text-shadow:
-    0 0 5px
-    rgba(0,0,0,.25);
-
-  pointer-events: none;
-
-  /*
-    Yazının pikselin
-    hareketinde okunabilir
-    kalması.
-  */
+  word-break: normal;
 
   user-select: none;
+
+  pointer-events: none;
 }
 
 
-/* =====================================================
-   PIXEL HOVER
-===================================================== */
+/* =========================================================
+   NODE HOVER
+   ========================================================= */
 
 .pixel-node:hover {
-
-  z-index: 30;
+  z-index: 100;
 
   transform:
     translate(-50%, -50%)
-    scale(1.5);
+    scale(1.25);
 
   filter:
-    contrast(1.3);
+    brightness(1.25)
+    contrast(1.25);
 
   box-shadow:
     0 0 0 2px currentColor,
-    0 0 25px
-    rgba(255,255,255,.20);
-}
+    0 0 25px rgba(255,255,255,.28);
 
-
-.pixel-node.is-hovered {
   animation-play-state: paused;
 }
 
 
-/* =====================================================
-   PIXEL BREATHING
-===================================================== */
+.pixel-node:active {
+  transform:
+    translate(-50%, -50%)
+    scale(.94);
+}
 
-@keyframes breathe {
 
-  from {
-    transform:
-      translate(-50%, -50%)
-      scale(.86);
+/* =========================================================
+   NODE FLOAT
+   ========================================================= */
 
-    opacity: .72;
+@keyframes nodeFloat {
+
+  0% {
+    margin-top: -5px;
   }
 
-  to {
-    transform:
-      translate(-50%, -50%)
-      scale(1.12);
-
-    opacity: 1;
+  100% {
+    margin-top: 5px;
   }
 }
 
 
-/* =====================================================
-   FULL SCREEN SECTION
-===================================================== */
+/* =========================================================
+   BOTTOM HINT
+   ========================================================= */
+
+.hint {
+  position: absolute;
+
+  left: 24px;
+  bottom: max(18px, env(safe-area-inset-bottom));
+
+  z-index: 20;
+
+  font-size: 9px;
+
+  letter-spacing: .08em;
+
+  opacity: .6;
+
+  pointer-events: none;
+
+  text-transform: uppercase;
+
+  mix-blend-mode: difference;
+}
+
+
+.mobile-hint {
+  display: none;
+}
+
+
+/* =========================================================
+   FULLSCREEN SECTION
+   ========================================================= */
 
 .section-layer {
-
   position: fixed;
-
   inset: 0;
 
-  z-index: 100;
+  z-index: 500;
 
   visibility: hidden;
 
@@ -486,808 +527,499 @@ button {
 
 
 .section-layer.open {
-
   visibility: visible;
 
   pointer-events: auto;
 }
 
 
-/* =====================================================
-   EXPANDING SURFACE
-===================================================== */
+/* =========================================================
+   SECTION SURFACE
+   ========================================================= */
 
 .section-surface {
-
   position: absolute;
 
-  left:
-    var(--origin-x, 50vw);
+  inset: 0;
 
-  top:
-    var(--origin-y, 50vh);
-
-  width: 1px;
-  height: 1px;
+  width: 100%;
+  height: 100%;
 
   overflow: hidden;
 
-  background:
-    var(--surface-color, #050505);
+  background: var(--surface-color);
+  color: var(--surface-text);
 
-  color:
-    var(--surface-text, #f4f4f0);
-
-  transform:
-    translate(-50%, -50%)
-    scale(0);
-
-  transform-origin:
-    center center;
+  clip-path:
+    circle(
+      0px at
+      var(--origin-x, 50%)
+      var(--origin-y, 50%)
+    );
 
   transition:
-    width var(--transition),
-    height var(--transition),
-    transform var(--transition);
+    clip-path 800ms var(--ease);
 
-  /*
-    Açılırken hafif CRT
-    hissi.
-  */
-
-  box-shadow:
-    0 0 80px
-    rgba(255,255,255,.08);
+  isolation: isolate;
 }
 
 
-.section-layer.open
-.section-surface {
-
-  width: 100vw;
-
-  height: 100dvh;
-
-  transform:
-    translate(-50%, -50%)
-    scale(1);
+.section-layer.open .section-surface {
+  clip-path:
+    circle(
+      150vmax at
+      var(--origin-x, 50%)
+      var(--origin-y, 50%)
+    );
 }
 
 
-/* =====================================================
-   SURFACE COLORS
-===================================================== */
+/* =========================================================
+   SECTION COLORS
+   ========================================================= */
 
 .section-surface.paper {
-
-  --surface-color:
-    var(--paper);
-
-  --surface-text:
-    var(--black);
+  --surface-color: var(--paper);
+  --surface-text: #050505;
 }
 
 
 .section-surface.black {
-
-  --surface-color:
-    var(--black);
-
-  --surface-text:
-    var(--white);
+  --surface-color: #050505;
+  --surface-text: #f4f4ef;
 }
 
 
 .section-surface.gray {
-
-  --surface-color:
-    #777;
-
-  --surface-text:
-    var(--white);
+  --surface-color: #6d6d6d;
+  --surface-text: #f4f4ef;
 }
 
 
-/* =====================================================
-   SECTION CONTENT
-===================================================== */
+/* =========================================================
+   TOP BAR
+   ========================================================= */
 
-.section-content {
+.section-topbar {
+  position: absolute;
 
-  width:
-    min(
-      1100px,
-      calc(100vw - 80px)
-    );
+  top: 0;
+  left: 0;
+  right: 0;
 
-  height:
-    100%;
+  z-index: 1000;
 
-  margin:
-    0 auto;
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
 
   padding:
-    clamp(80px, 10vh, 130px)
-    0
-    80px;
-
-  overflow-y: auto;
-
-  overflow-x: hidden;
-
-  opacity: 0;
-
-  transform:
-    translateY(20px);
-
-  transition:
-    opacity 350ms ease 520ms,
-    transform 350ms ease 520ms;
-
-  scrollbar-width: thin;
-
-  scrollbar-color:
-    currentColor
-    transparent;
+    max(22px, env(safe-area-inset-top))
+    26px
+    0;
 }
 
 
-.section-layer.open
-.section-content {
+.section-label {
+  padding-top: 4px;
+
+  font-size: 10px;
+
+  letter-spacing: .08em;
+
+  text-transform: uppercase;
+
+  opacity: .65;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.close-button {
+  position: relative;
+
+  z-index: 1001;
+
+  display: block;
+
+  appearance: none;
+
+  border: 1px solid currentColor;
+
+  outline: none;
+
+  background: var(--surface-color);
+
+  color: var(--surface-text);
+
+  padding: 10px 13px;
+
+  min-width: 82px;
+
+  cursor: pointer;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: .06em;
+
+  text-transform: uppercase;
 
   opacity: 1;
 
-  transform:
-    translateY(0);
-}
-
-
-/* =====================================================
-   SECTION TITLE
-===================================================== */
-
-.section-content h1 {
-
-  margin:
-    0 0 clamp(35px, 6vh, 70px);
-
-  max-width:
-    100%;
-
-  font-size:
-    clamp(
-      48px,
-      9vw,
-      130px
-    );
-
-  line-height:
-    .85;
-
-  letter-spacing:
-    -.08em;
-
-  text-transform:
-    uppercase;
-
-  overflow-wrap:
-    break-word;
-}
-
-
-/* =====================================================
-   SECTION SUBTITLE
-===================================================== */
-
-.section-content h2 {
-
-  font-size:
-    clamp(
-      11px,
-      1vw,
-      14px
-    );
-
-  line-height:
-    1.3;
-
-  letter-spacing:
-    .1em;
-
-  text-transform:
-    uppercase;
-
-  margin:
-    0 0 14px;
-}
-
-
-/* =====================================================
-   SECTION TEXT
-===================================================== */
-
-.section-content p,
-.section-content li {
-
-  max-width:
-    720px;
-
-  font-size:
-    clamp(
-      12px,
-      1vw,
-      15px
-    );
-
-  line-height:
-    1.8;
-
-  margin-top:
-    0;
-
-  overflow-wrap:
-    break-word;
-}
-
-
-.section-content a {
-
-  color:
-    inherit;
-
-  text-decoration:
-    underline;
-
-  text-decoration-thickness:
-    1px;
-
-  text-underline-offset:
-    4px;
-}
-
-
-/* =====================================================
-   TWO COLUMN CONTENT
-===================================================== */
-
-.content-grid {
-
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
-
-  gap:
-    clamp(
-      30px,
-      6vw,
-      80px
-    );
-}
-
-
-/* =====================================================
-   WORK ITEMS
-===================================================== */
-
-.work {
-
-  border-top:
-    1px solid currentColor;
-
-  padding-top:
-    16px;
-
-  margin-bottom:
-    30px;
-}
-
-
-.work strong {
-
-  display:
-    block;
-
-  margin-bottom:
-    8px;
-
-  font-size:
-    clamp(
-      12px,
-      1vw,
-      15px
-    );
-
-  line-height:
-    1.4;
-}
-
-
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-
-.close-button {
-
-  position: fixed;
-
-  z-index: 200;
-
-  top:
-    24px;
-
-  right:
-    26px;
-
-  border:
-    1px solid currentColor;
-
-  background:
-    transparent;
-
-  color:
-    inherit;
-
-  padding:
-    10px 14px;
-
-  cursor:
-    pointer;
-
-  font-size:
-    10px;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    .08em;
-
-  text-transform:
-    uppercase;
+  visibility: visible;
 
   transition:
-    background 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+    background .15s linear,
+    color .15s linear;
 }
 
 
 .close-button:hover {
+  background: var(--surface-text);
 
-  background:
-    currentColor;
-
-  color:
-    var(--surface-color);
-
-  transform:
-    scale(1.05);
+  color: var(--surface-color);
 }
 
 
-/* =====================================================
-   BOTTOM HINT
-===================================================== */
+.close-button:active {
+  transform: scale(.96);
+}
 
-.hint {
 
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.section-content {
   position: absolute;
 
-  z-index: 9;
+  inset: 0;
 
-  left:
-    26px;
+  width: 100%;
+  height: 100%;
 
-  bottom:
-    22px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  overscroll-behavior: contain;
+
+  padding:
+    120px
+    max(28px, 5vw)
+    80px;
+
+  opacity: 0;
+
+  transform: translateY(20px);
+
+  transition:
+    opacity .35s ease .45s,
+    transform .5s ease .45s;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+.section-layer.open .section-content {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   CONTENT TYPOGRAPHY
+   ========================================================= */
+
+.section-content h1 {
+  margin: 0 0 55px;
+
+  max-width: 1200px;
 
   font-size:
-    9px;
+    clamp(
+      48px,
+      10vw,
+      150px
+    );
 
-  letter-spacing:
-    .08em;
+  line-height: .82;
 
-  opacity:
-    .55;
+  letter-spacing: -.075em;
 
-  pointer-events:
-    none;
+  text-transform: uppercase;
 }
 
 
-/* =====================================================
-   TABLET
-===================================================== */
+.section-content h2 {
+  margin: 0 0 14px;
 
-@media (max-width: 900px) {
+  font-size: 14px;
+
+  line-height: 1.2;
+
+  letter-spacing: .08em;
+
+  text-transform: uppercase;
+}
+
+
+.section-content p,
+.section-content li {
+  max-width: 760px;
+
+  margin-top: 0;
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+
+.section-content a {
+  color: inherit;
+
+  text-decoration-thickness: 1px;
+
+  text-underline-offset: 5px;
+}
+
+
+/* =========================================================
+   CONTENT GRID
+   ========================================================= */
+
+.content-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 70px;
+
+  max-width: 1200px;
+}
+
+
+/* =========================================================
+   WORK ITEMS
+   ========================================================= */
+
+.work {
+  max-width: 1000px;
+
+  padding-top: 18px;
+
+  margin-bottom: 38px;
+
+  border-top:
+    1px solid currentColor;
+}
+
+
+.work strong {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 15px;
+
+  letter-spacing: .02em;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.section-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+.section-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.section-content::-webkit-scrollbar-thumb {
+  background: currentColor;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  #app {
+    cursor: default;
+  }
+
 
   .identity {
+    top: max(15px, env(safe-area-inset-top));
 
-    top:
-      18px;
+    left: 16px;
+    right: 16px;
 
-    left:
-      20px;
+    gap: 4px;
 
-    right:
-      20px;
+    flex-direction: column;
 
-    font-size:
-      9px;
+    font-size: 8px;
+
+    line-height: 1.35;
+  }
+
+
+  .identity span:last-child {
+    text-align: left;
   }
 
 
   .pixel-node {
+    min-width: 58px;
+    min-height: 58px;
 
-    min-width:
-      28px;
-
-    min-height:
-      28px;
+    padding: 6px;
   }
 
 
   .pixel-node span {
+    font-size: 8px;
 
-    font-size:
-      clamp(
-        7px,
-        1.1vw,
-        10px
-      );
-
-    max-width:
-      130px;
+    line-height: 1.05;
   }
 
-
-  .section-content {
-
-    width:
-      calc(100vw - 50px);
-
-    padding-top:
-      85px;
-
-    padding-bottom:
-      60px;
-  }
-}
-
-
-/* =====================================================
-   PHONE
-===================================================== */
-
-@media (max-width: 600px) {
-
-  html,
-  body {
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-  }
-
-
-  .app {
-
-    width:
-      100vw;
-
-    height:
-      100dvh;
-  }
-
-
-  /* Header */
-
-  .identity {
-
-    top:
-      15px;
-
-    left:
-      16px;
-
-    right:
-      16px;
-
-    display:
-      flex;
-
-    flex-direction:
-      column;
-
-    gap:
-      3px;
-
-    font-size:
-      7px;
-
-    line-height:
-      1.35;
-
-    letter-spacing:
-      .07em;
-  }
-
-
-  /* Bottom hint */
 
   .hint {
+    left: 16px;
 
-    left:
-      16px;
-
-    bottom:
-      14px;
-
-    font-size:
-      7px;
+    font-size: 8px;
   }
 
 
-  /* Information pixels */
-
-  .pixel-node {
-
-    min-width:
-      31px;
-
-    min-height:
-      31px;
+  .desktop-hint {
+    display: none;
   }
 
 
-  /*
-    Telefonda yazıyı
-    küçültmek yerine
-    okunabilir tutuyoruz.
-  */
+  .mobile-hint {
+    display: inline;
+  }
 
-  .pixel-node span {
 
-    font-size:
-      7px;
-
-    letter-spacing:
-      .025em;
-
-    max-width:
-      105px;
-
+  .section-topbar {
     padding:
-      2px 3px;
+      max(16px, env(safe-area-inset-top))
+      16px
+      0;
   }
 
 
-  /*
-    Mobilde hover olmadığı için
-    dokununca fazla büyümesini
-    engelliyoruz.
-  */
-
-  .pixel-node:hover {
-
-    transform:
-      translate(-50%, -50%)
-      scale(1.2);
+  .section-label {
+    font-size: 8px;
   }
 
 
-  /* Fullscreen content */
+  .close-button {
+    min-width: 78px;
+
+    padding: 10px 11px;
+
+    font-size: 9px;
+  }
+
 
   .section-content {
-
-    width:
-      calc(100vw - 32px);
-
     padding:
-      78px 0 45px;
-
-    margin:
-      0 auto;
+      90px
+      20px
+      max(50px, env(safe-area-inset-bottom));
   }
 
 
   .section-content h1 {
+    margin-bottom: 38px;
 
     font-size:
       clamp(
-        42px,
+        44px,
         15vw,
-        76px
+        90px
       );
-
-    line-height:
-      .88;
-
-    margin-bottom:
-      34px;
-
-    letter-spacing:
-      -.075em;
   }
 
 
   .section-content h2 {
-
-    font-size:
-      10px;
-
-    margin-bottom:
-      10px;
+    font-size: 12px;
   }
 
 
   .section-content p,
   .section-content li {
+    font-size: 13px;
 
-    font-size:
-      12px;
-
-    line-height:
-      1.7;
+    line-height: 1.75;
   }
 
-
-  /*
-    İki kolon artık
-    tek kolon.
-  */
 
   .content-grid {
+    grid-template-columns: 1fr;
 
-    grid-template-columns:
-      1fr;
-
-    gap:
-      30px;
-  }
-
-
-  .work {
-
-    padding-top:
-      12px;
-
-    margin-bottom:
-      25px;
-  }
-
-
-  .work strong {
-
-    font-size:
-      12px;
-
-    line-height:
-      1.45;
-  }
-
-
-  /* BACK */
-
-  .close-button {
-
-    top:
-      14px;
-
-    right:
-      15px;
-
-    padding:
-      8px 10px;
-
-    font-size:
-      8px;
-
-    letter-spacing:
-      .06em;
-  }
-
-
-  /* Mobile CRT */
-
-  .crt-noise {
-
-    opacity:
-      .08;
-  }
-
-
-  .crt-scanlines {
-
-    opacity:
-      .045;
+    gap: 35px;
   }
 }
 
 
-/* =====================================================
-   VERY SMALL PHONE
-===================================================== */
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
 
-@media (max-width: 380px) {
+@media (max-width: 390px) {
 
   .pixel-node {
-
-    min-width:
-      27px;
-
-    min-height:
-      27px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
 
   .pixel-node span {
-
-    font-size:
-      6px;
-
-    max-width:
-      85px;
-  }
-
-
-  .identity {
-
-    font-size:
-      6px;
+    font-size: 7px;
   }
 
 
   .section-content {
-
-    width:
-      calc(100vw - 26px);
-
-    padding-top:
-      70px;
-  }
-
-
-  .section-content h1 {
-
-    font-size:
-      38px;
-  }
-
-
-  .section-content p,
-  .section-content li {
-
-    font-size:
-      11px;
-
-    line-height:
-      1.65;
+    padding-left: 17px;
+    padding-right: 17px;
   }
 }
 
 
-/* =====================================================
+/* =========================================================
    REDUCED MOTION
-===================================================== */
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
-  .pixel-node,
+  .crt-noise,
+  .crt-scanlines,
+  .pixel-node {
+    animation: none !important;
+  }
+
   .section-surface,
-  .section-content,
-  .crt-noise {
-
-    animation:
-      none !important;
-
-    transition:
-      none !important;
+  .section-content {
+    transition: none !important;
   }
 }
