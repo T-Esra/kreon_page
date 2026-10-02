@@ -1,58 +1,38 @@
-/* =========================================================
-   ESRA TÖLE
-   PIXEL PORTFOLIO ENGINE
-   ========================================================= */
-
 "use strict";
 
 
 /* =========================================================
-   CONFIGURATION
+   CONFIG
    ========================================================= */
 
 const CONFIG = {
 
-  /*
-   * Background particle count.
-   * Automatically adjusted according to screen size.
-   */
-  particleDensity: 0.00020,
+  /* Background particle amount */
+  particleDensity: 0.00024,
 
-  minParticles: 180,
-  maxParticles: 620,
+  minParticles: 220,
+  maxParticles: 700,
 
-  /*
-   * Particle movement
-   */
-  movementSpeed: 0.35,
-  flowStrength: 0.85,
+  /* Movement */
+  movementSpeed: 0.42,
+  flowStrength: 1.0,
 
-  /*
-   * Mouse interaction
-   */
-  mouseRadius: 240,
-  mouseForce: 0.95,
+  /* Mouse */
+  mouseRadius: 260,
+  mouseForce: 1.2,
 
-  /*
-   * Particle appearance
-   */
+  /* Particle size */
   minSize: 1,
-  maxSize: 8,
+  maxSize: 11,
 
-  /*
-   * CRT grain generated directly on canvas
-   */
-  grainStrength: 0.22,
-
-  /*
-   * FPS safety
-   */
-  targetFPS: 55
+  /* CRT */
+  staticStrength: 1.0,
+  glitchChance: 0.16
 };
 
 
 /* =========================================================
-   PORTFOLIO SECTIONS
+   SECTIONS
    ========================================================= */
 
 const sections = [
@@ -145,10 +125,6 @@ const sections = [
           and collective making.
         </p>
       </div>
-
-      <p>
-        More projects can be added here later.
-      </p>
     `
   },
 
@@ -207,6 +183,7 @@ const sections = [
       <h1>Experience</h1>
 
       <div class="work">
+
         <strong>
           LIDAR / Spatial Analysis Internship
         </strong>
@@ -215,9 +192,11 @@ const sections = [
           Point clouds, mesh generation, spatial analysis
           and real-world data workflows.
         </p>
+
       </div>
 
       <div class="work">
+
         <strong>
           KARMEN Landscape Design Office
         </strong>
@@ -226,9 +205,11 @@ const sections = [
           AutoCAD project drawings, dimensioning,
           planting and site visits.
         </p>
+
       </div>
 
       <div class="work">
+
         <strong>
           İstanbul Planning Agency
         </strong>
@@ -237,6 +218,7 @@ const sections = [
           GIS-based planning work around Beyoğlu,
           Kasımpaşa and Haliç using ArcGIS and QGIS.
         </p>
+
       </div>
     `
   },
@@ -330,7 +312,7 @@ const closeButton =
 
 
 /* =========================================================
-   GLOBAL STATE
+   STATE
    ========================================================= */
 
 let W = 0;
@@ -342,17 +324,14 @@ let particles = [];
 
 let opened = false;
 
-let activeSection = null;
-
 let lastTime = 0;
 
-let fpsCounter = 0;
-
-let fpsTime = 0;
+let fpsFrames = 0;
+let fpsTimer = 0;
 
 
 /* =========================================================
-   POINTER STATE
+   POINTER
    ========================================================= */
 
 const pointer = {
@@ -360,18 +339,18 @@ const pointer = {
   x: -9999,
   y: -9999,
 
-  previousX: -9999,
-  previousY: -9999,
+  oldX: -9999,
+  oldY: -9999,
 
-  velocityX: 0,
-  velocityY: 0,
+  vx: 0,
+  vy: 0,
 
   active: false
 };
 
 
 /* =========================================================
-   RANDOM HELPERS
+   HELPERS
    ========================================================= */
 
 function random(min, max) {
@@ -380,7 +359,10 @@ function random(min, max) {
 
 
 function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
+  return Math.max(
+    min,
+    Math.min(max, value)
+  );
 }
 
 
@@ -395,60 +377,95 @@ function lerp(a, b, amount) {
 
 function createParticles() {
 
-  const area = W * H;
+  const area =
+    W * H;
+
 
   let count =
-    Math.floor(area * CONFIG.particleDensity);
-
-  count = clamp(
-    count,
-    CONFIG.minParticles,
-    CONFIG.maxParticles
-  );
+    Math.floor(
+      area *
+      CONFIG.particleDensity
+    );
 
 
-  particles = new Array(count);
+  count =
+    clamp(
+      count,
+      CONFIG.minParticles,
+      CONFIG.maxParticles
+    );
 
 
-  for (let i = 0; i < count; i++) {
+  particles =
+    new Array(count);
+
+
+  for (
+    let i = 0;
+    i < count;
+    i++
+  ) {
+
+    /*
+     * Weighted size distribution.
+     *
+     * Most particles are small.
+     * Some are medium.
+     * A few are large.
+     */
+
+    const sizeRandom =
+      Math.pow(
+        Math.random(),
+        1.7
+      );
+
+
+    const baseSize =
+      CONFIG.minSize +
+      sizeRandom *
+      (
+        CONFIG.maxSize -
+        CONFIG.minSize
+      );
+
 
     particles[i] = {
 
-      x: random(0, W),
-      y: random(0, H),
+      x:
+        random(0, W),
 
-      vx: random(-0.18, 0.18),
-      vy: random(-0.18, 0.18),
+      y:
+        random(0, H),
 
-      baseSize:
-        random(
-          CONFIG.minSize,
-          CONFIG.maxSize
-        ),
+      vx:
+        random(-.18, .18),
+
+      vy:
+        random(-.18, .18),
+
+      baseSize,
 
       size:
-        random(
-          CONFIG.minSize,
-          CONFIG.maxSize
-        ),
-
-      alpha:
-        random(.18, .82),
+        baseSize,
 
       phase:
         random(0, Math.PI * 2),
 
-      frequency:
-        random(.00035, .0012),
-
-      drift:
-        random(.3, 1.3),
-
       seed:
         random(0, 10000),
 
+      drift:
+        random(.45, 1.5),
+
+      alpha:
+        random(.20, .95),
+
       brightness:
-        random(.35, 1)
+        random(.3, 1),
+
+      pulseSpeed:
+        random(.0005, .0018)
     };
   }
 }
@@ -466,8 +483,12 @@ function resize() {
       2
     );
 
-  W = window.innerWidth;
-  H = window.innerHeight;
+
+  W =
+    window.innerWidth;
+
+  H =
+    window.innerHeight;
 
 
   canvas.width =
@@ -475,6 +496,7 @@ function resize() {
 
   canvas.height =
     Math.floor(H * dpr);
+
 
   canvas.style.width =
     `${W}px`;
@@ -498,36 +520,43 @@ function resize() {
 
 
 /* =========================================================
-   PARTICLE FLOW FIELD
+   FLOW FIELD
    ========================================================= */
 
-function flowAngle(x, y, time, seed) {
+function getFlowAngle(
+  x,
+  y,
+  time,
+  seed
+) {
 
   const a =
     Math.sin(
-      x * 0.0021 +
-      time * 0.00019 +
+      x * .0021 +
+      time * .00018 +
       seed
     );
 
+
   const b =
     Math.cos(
-      y * 0.0017 -
-      time * 0.00015 +
+      y * .0018 -
+      time * .00014 +
       seed * 1.7
     );
 
+
   const c =
     Math.sin(
-      (x + y) * 0.0008 +
-      time * 0.00012
+      (x + y) * .0008 +
+      time * .00011
     );
 
 
   return (
-    a * 1.4 +
-    b * 1.2 +
-    c * .9
+    a * 1.5 +
+    b * 1.25 +
+    c
   );
 }
 
@@ -536,20 +565,24 @@ function flowAngle(x, y, time, seed) {
    UPDATE PARTICLES
    ========================================================= */
 
-function updateParticles(time, delta) {
+function updateParticles(
+  time,
+  delta
+) {
 
   const dt =
-    Math.min(delta, 32);
+    Math.min(
+      delta,
+      32
+    );
 
 
-  for (const p of particles) {
-
-    /*
-     * Organic flow
-     */
+  for (
+    const p of particles
+  ) {
 
     const angle =
-      flowAngle(
+      getFlowAngle(
         p.x,
         p.y,
         time,
@@ -562,53 +595,47 @@ function updateParticles(time, delta) {
       CONFIG.flowStrength *
       p.drift;
 
+
     const flowY =
       Math.sin(angle) *
       CONFIG.flowStrength *
       p.drift;
 
 
+    /*
+     * Smooth natural movement
+     */
+
     p.vx =
       lerp(
         p.vx,
-        flowX * .025,
+        flowX * .035,
         .025
       );
+
 
     p.vy =
       lerp(
         p.vy,
-        flowY * .025,
+        flowY * .035,
         .025
       );
 
 
     /*
-     * Slow natural movement
-     */
-
-    p.x +=
-      p.vx *
-      CONFIG.movementSpeed *
-      dt;
-
-    p.y +=
-      p.vy *
-      CONFIG.movementSpeed *
-      dt;
-
-
-    /*
-     * Mouse / touch force
+     * Mouse interaction
      */
 
     if (pointer.active) {
 
       const dx =
-        p.x - pointer.x;
+        p.x -
+        pointer.x;
 
       const dy =
-        p.y - pointer.y;
+        p.y -
+        pointer.y;
+
 
       const distance =
         Math.sqrt(
@@ -619,54 +646,71 @@ function updateParticles(time, delta) {
 
       if (
         distance > 0 &&
-        distance < CONFIG.mouseRadius
+        distance <
+        CONFIG.mouseRadius
       ) {
 
-        const normalized =
+        const influence =
           1 -
           distance /
           CONFIG.mouseRadius;
 
+
         const force =
-          normalized *
-          normalized *
+          influence *
+          influence *
           CONFIG.mouseForce;
 
-
-        /*
-         * Push away from pointer
-         */
 
         p.vx +=
           (dx / distance) *
           force *
-          .018;
+          .025;
+
 
         p.vy +=
           (dy / distance) *
           force *
-          .018;
+          .025;
 
 
         /*
-         * Pointer movement creates flow
+         * Pointer movement
+         * creates an extra current.
          */
 
         p.vx +=
-          pointer.velocityX *
-          normalized *
-          .0008;
+          pointer.vx *
+          influence *
+          .001;
+
 
         p.vy +=
-          pointer.velocityY *
-          normalized *
-          .0008;
+          pointer.vy *
+          influence *
+          .001;
       }
     }
 
 
     /*
-     * Velocity damping
+     * Move
+     */
+
+    p.x +=
+      p.vx *
+      CONFIG.movementSpeed *
+      dt;
+
+
+    p.y +=
+      p.vy *
+      CONFIG.movementSpeed *
+      dt;
+
+
+    /*
+     * Damping
      */
 
     p.vx *= .992;
@@ -674,26 +718,39 @@ function updateParticles(time, delta) {
 
 
     /*
-     * Soft breathing
+     * Dynamic size.
+     *
+     * This is what makes the field
+     * feel alive instead of static.
      */
+
+    const pulse =
+      Math.sin(
+        time *
+        p.pulseSpeed +
+        p.phase
+      );
+
+
+    const pulseAmount =
+      .35 +
+      p.drift * .12;
+
 
     p.size =
       p.baseSize *
       (
         1 +
-        Math.sin(
-          time * p.frequency +
-          p.phase
-        ) *
-        .35
+        pulse *
+        pulseAmount
       );
 
 
     /*
-     * Screen wrapping
+     * Wrap around screen
      */
 
-    const margin = 30;
+    const margin = 40;
 
 
     if (p.x < -margin) {
@@ -716,14 +773,10 @@ function updateParticles(time, delta) {
 
 
 /* =========================================================
-   DRAW BACKGROUND
+   BACKGROUND
    ========================================================= */
 
 function drawBackground() {
-
-  /*
-   * Deep CRT background
-   */
 
   const gradient =
     ctx.createRadialGradient(
@@ -732,19 +785,27 @@ function drawBackground() {
       0,
       W * .5,
       H * .48,
-      Math.max(W, H) * .8
+      Math.max(W, H) * .85
     );
 
 
   gradient.addColorStop(
     0,
-    "#171717"
+    "#181818"
   );
 
+
   gradient.addColorStop(
-    .42,
-    "#0b0b0b"
+    .35,
+    "#0c0c0c"
   );
+
+
+  gradient.addColorStop(
+    .72,
+    "#030303"
+  );
+
 
   gradient.addColorStop(
     1,
@@ -752,7 +813,9 @@ function drawBackground() {
   );
 
 
-  ctx.fillStyle = gradient;
+  ctx.fillStyle =
+    gradient;
+
 
   ctx.fillRect(
     0,
@@ -764,7 +827,7 @@ function drawBackground() {
 
 
 /* =========================================================
-   DRAW PARTICLES
+   PARTICLES
    ========================================================= */
 
 function drawParticles(time) {
@@ -775,15 +838,19 @@ function drawParticles(time) {
     "screen";
 
 
-  for (const p of particles) {
+  for (
+    const p of particles
+  ) {
 
     const flicker =
-      .72 +
+      .65 +
       Math.sin(
-        time * p.frequency * 2 +
+        time *
+        p.pulseSpeed *
+        2 +
         p.phase
       ) *
-      .28;
+      .35;
 
 
     const alpha =
@@ -793,9 +860,9 @@ function drawParticles(time) {
 
     const brightness =
       Math.floor(
-        90 +
+        70 +
         p.brightness *
-        165
+        185
       );
 
 
@@ -810,14 +877,10 @@ function drawParticles(time) {
 
     const size =
       Math.max(
-        .7,
+        .6,
         p.size
       );
 
-
-    /*
-     * Tiny square particles
-     */
 
     ctx.fillRect(
       Math.round(p.x),
@@ -833,14 +896,21 @@ function drawParticles(time) {
 
 
 /* =========================================================
-   EXTRA STATIC
+   HEAVY CRT STATIC
    ========================================================= */
 
 function drawStatic() {
 
+  /*
+   * Number of static pixels.
+   */
+
   const amount =
     Math.floor(
-      W * H * CONFIG.grainStrength / 850
+      W *
+      H *
+      .00055 *
+      CONFIG.staticStrength
     );
 
 
@@ -857,34 +927,55 @@ function drawStatic() {
   ) {
 
     const x =
-      Math.random() * W;
+      Math.random() *
+      W;
 
     const y =
-      Math.random() * H;
+      Math.random() *
+      H;
 
 
-    const brightness =
-      Math.random() > .5
-        ? 255
-        : 55;
+    const bright =
+      Math.random();
+
+
+    let value;
+
+
+    if (bright > .92) {
+
+      value =
+        255;
+
+    } else if (bright > .45) {
+
+      value =
+        random(120, 220);
+
+    } else {
+
+      value =
+        random(20, 90);
+    }
 
 
     const alpha =
-      Math.random() * .16;
+      random(.05, .26);
 
 
     ctx.fillStyle =
       `rgba(
-        ${brightness},
-        ${brightness},
-        ${brightness},
+        ${value},
+        ${value},
+        ${value},
         ${alpha}
       )`;
 
 
     const size =
-      Math.random() > .96
-        ? 2
+      Math.random() >
+      .97
+        ? random(2, 4)
         : 1;
 
 
@@ -902,27 +993,62 @@ function drawStatic() {
 
 
 /* =========================================================
-   HORIZONTAL CRT GLITCHES
+   CRT HORIZONTAL INTERFERENCE
    ========================================================= */
 
-function drawGlitches(time) {
+function drawCRTInterference() {
 
   /*
-   * Small amount of moving horizontal noise.
+   * Many tiny horizontal lines.
    */
 
-  if (
-    Math.random() > .88
+  ctx.save();
+
+  ctx.globalCompositeOperation =
+    "screen";
+
+
+  const lines =
+    Math.floor(
+      H / 8
+    );
+
+
+  for (
+    let i = 0;
+    i < lines;
+    i++
   ) {
 
-    const y =
-      Math.random() * H;
+    if (
+      Math.random() >
+      .30
+    ) {
+      continue;
+    }
 
-    const height =
-      Math.random() * 2 + 1;
+
+    const y =
+      Math.random() *
+      H;
+
+
+    const width =
+      random(
+        W * .02,
+        W * .45
+      );
+
+
+    const x =
+      random(
+        0,
+        W - width
+      );
+
 
     const alpha =
-      Math.random() * .12;
+      random(.025, .14);
 
 
     ctx.fillStyle =
@@ -935,45 +1061,82 @@ function drawGlitches(time) {
 
 
     ctx.fillRect(
-      0,
-      y,
-      W,
-      height
-    );
-  }
-
-
-  /*
-   * Very subtle vertical interference.
-   */
-
-  if (
-    Math.random() > .94
-  ) {
-
-    const x =
-      Math.random() * W;
-
-    const width =
-      random(1, 4);
-
-
-    ctx.fillStyle =
-      "rgba(255,255,255,.08)";
-
-
-    ctx.fillRect(
       x,
-      0,
+      y,
       width,
-      H
+      random(.5, 2)
     );
   }
+
+
+  ctx.restore();
 }
 
 
 /* =========================================================
-   MAIN ANIMATION
+   BIG CRT GLITCH
+   ========================================================= */
+
+function drawGlitch() {
+
+  if (
+    Math.random() >
+    CONFIG.glitchChance
+  ) {
+    return;
+  }
+
+
+  const y =
+    random(
+      0,
+      H
+    );
+
+
+  const height =
+    random(
+      1,
+      7
+    );
+
+
+  const shift =
+    random(
+      -40,
+      40
+    );
+
+
+  ctx.save();
+
+
+  ctx.globalAlpha =
+    random(
+      .08,
+      .28
+    );
+
+
+  ctx.drawImage(
+    canvas,
+    0,
+    y,
+    W,
+    height,
+    shift,
+    y,
+    W,
+    height
+  );
+
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   ANIMATION
    ========================================================= */
 
 function animate(time) {
@@ -984,10 +1147,12 @@ function animate(time) {
 
 
   const delta =
-    time - lastTime;
+    time -
+    lastTime;
 
 
-  lastTime = time;
+  lastTime =
+    time;
 
 
   updateParticles(
@@ -1002,34 +1167,36 @@ function animate(time) {
 
   drawStatic();
 
-  drawGlitches(time);
+  drawCRTInterference();
+
+  drawGlitch();
 
 
   /*
-   * FPS monitor
+   * FPS protection
    */
 
-  fpsCounter++;
+  fpsFrames++;
+
 
   if (
-    time - fpsTime > 1000
+    time -
+    fpsTimer >
+    1000
   ) {
 
     const fps =
-      fpsCounter;
-
-    fpsCounter = 0;
-
-    fpsTime = time;
+      fpsFrames;
 
 
-    /*
-     * If device is struggling,
-     * reduce particles.
-     */
+    fpsFrames = 0;
+
+    fpsTimer =
+      time;
+
 
     if (
-      fps < CONFIG.targetFPS &&
+      fps < 45 &&
       particles.length >
       CONFIG.minParticles
     ) {
@@ -1037,7 +1204,8 @@ function animate(time) {
       particles.splice(
         0,
         Math.floor(
-          particles.length * .08
+          particles.length *
+          .07
         )
       );
     }
@@ -1051,33 +1219,44 @@ function animate(time) {
 
 
 /* =========================================================
-   POINTER MOVEMENT
+   POINTER
    ========================================================= */
 
-function updatePointer(x, y) {
+function updatePointer(
+  x,
+  y
+) {
 
   if (
     pointer.x > -900
   ) {
 
-    pointer.velocityX =
-      x - pointer.x;
+    pointer.vx =
+      x -
+      pointer.x;
 
-    pointer.velocityY =
-      y - pointer.y;
+    pointer.vy =
+      y -
+      pointer.y;
   }
 
 
-  pointer.previousX =
+  pointer.oldX =
     pointer.x;
 
-  pointer.previousY =
+  pointer.oldY =
     pointer.y;
 
-  pointer.x = x;
-  pointer.y = y;
 
-  pointer.active = true;
+  pointer.x =
+    x;
+
+  pointer.y =
+    y;
+
+
+  pointer.active =
+    true;
 }
 
 
@@ -1089,6 +1268,7 @@ window.addEventListener(
       event.clientX,
       event.clientY
     );
+
   },
   {
     passive: true
@@ -1100,10 +1280,9 @@ window.addEventListener(
   "pointerleave",
   () => {
 
-    pointer.active = false;
+    pointer.active =
+      false;
 
-    pointer.x = -9999;
-    pointer.y = -9999;
   }
 );
 
@@ -1143,7 +1322,8 @@ window.addEventListener(
   "touchend",
   () => {
 
-    pointer.active = false;
+    pointer.active =
+      false;
 
   },
   {
@@ -1153,29 +1333,30 @@ window.addEventListener(
 
 
 /* =========================================================
-   BUILD MENU
+   BUILD INFORMATION PIXELS
    ========================================================= */
 
 function buildNodes() {
 
-  nodeLayer.innerHTML = "";
+  nodeLayer.innerHTML =
+    "";
 
 
   sections.forEach(
     (section, index) => {
 
       const button =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
 
 
-      button.type = "button";
+      button.type =
+        "button";
+
 
       button.className =
         "pixel-node";
-
-
-      button.dataset.id =
-        section.id;
 
 
       button.style.left =
@@ -1185,10 +1366,6 @@ function buildNodes() {
       button.style.top =
         `${section.y}%`;
 
-
-      /*
-       * Responsive pixel size
-       */
 
       button.style.setProperty(
         "--size",
@@ -1204,20 +1381,17 @@ function buildNodes() {
 
       button.style.setProperty(
         "--node-speed",
-        `${3.5 + index * .32}s`
+        `${3.2 + index * .35}s`
       );
 
-
-      /*
-       * Colors
-       */
 
       let nodeColor;
       let nodeText;
 
 
       if (
-        section.color === "white"
+        section.color ===
+        "white"
       ) {
 
         nodeColor =
@@ -1227,7 +1401,8 @@ function buildNodes() {
           "#050505";
 
       } else if (
-        section.color === "black"
+        section.color ===
+        "black"
       ) {
 
         nodeColor =
@@ -1239,7 +1414,7 @@ function buildNodes() {
       } else {
 
         nodeColor =
-          "#777777";
+          "#777";
 
         nodeText =
           "#f4f4ef";
@@ -1258,12 +1433,10 @@ function buildNodes() {
       );
 
 
-      /*
-       * Label
-       */
-
       const label =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
 
 
       label.textContent =
@@ -1275,36 +1448,6 @@ function buildNodes() {
       );
 
 
-      /*
-       * Mouse hover
-       */
-
-      button.addEventListener(
-        "pointerenter",
-        () => {
-
-          button.classList.add(
-            "is-hovered"
-          );
-        }
-      );
-
-
-      button.addEventListener(
-        "pointerleave",
-        () => {
-
-          button.classList.remove(
-            "is-hovered"
-          );
-        }
-      );
-
-
-      /*
-       * Click
-       */
-
       button.addEventListener(
         "click",
         () => {
@@ -1313,6 +1456,7 @@ function buildNodes() {
             section,
             button
           );
+
         }
       );
 
@@ -1326,7 +1470,7 @@ function buildNodes() {
 
 
 /* =========================================================
-   OPEN SECTION
+   OPEN POPUP
    ========================================================= */
 
 function openSection(
@@ -1339,33 +1483,181 @@ function openSection(
   }
 
 
-  opened = true;
+  opened =
+    true;
 
-  activeSection =
-    section;
-
-
-  /*
-   * Get clicked pixel position
-   */
 
   const rect =
     button.getBoundingClientRect();
 
 
-  const originX =
+  /*
+   * Center of clicked pixel
+   */
+
+  const pixelX =
     rect.left +
     rect.width / 2;
 
 
-  const originY =
+  const pixelY =
     rect.top +
     rect.height / 2;
 
 
   /*
-   * Set animation origin
+   * Popup size
    */
+
+  const isMobile =
+    window.innerWidth <= 700;
+
+
+  const popupWidth =
+    Math.min(
+      620,
+      window.innerWidth -
+      (isMobile ? 28 : 40)
+    );
+
+
+  const popupHeight =
+    Math.min(
+      isMobile
+        ? window.innerHeight * .72
+        : window.innerHeight * .72,
+      720
+    );
+
+
+  /*
+   * Try to position popup near
+   * clicked pixel.
+   */
+
+  let left =
+    pixelX +
+    35;
+
+
+  let top =
+    pixelY -
+    popupHeight / 2;
+
+
+  /*
+   * If right side doesn't fit,
+   * put it on the left.
+   */
+
+  if (
+    left +
+    popupWidth >
+    window.innerWidth -
+    15
+  ) {
+
+    left =
+      pixelX -
+      popupWidth -
+      35;
+  }
+
+
+  /*
+   * If left side doesn't fit,
+   * center it.
+   */
+
+  if (
+    left < 15
+  ) {
+
+    left =
+      (
+        window.innerWidth -
+        popupWidth
+      ) / 2;
+  }
+
+
+  /*
+   * Vertical correction.
+   */
+
+  if (
+    top < 15
+  ) {
+
+    top =
+      15;
+  }
+
+
+  if (
+    top +
+    popupHeight >
+    window.innerHeight -
+    15
+  ) {
+
+    top =
+      window.innerHeight -
+      popupHeight -
+      15;
+  }
+
+
+  /*
+   * Convert to percentages
+   * because surface is centered.
+   */
+
+  const centerX =
+    left +
+    popupWidth / 2;
+
+
+  const centerY =
+    top +
+    popupHeight / 2;
+
+
+  /*
+   * Origin inside popup.
+   * This makes it look like
+   * the pixel grows into the window.
+   */
+
+  const originX =
+    pixelX -
+    left;
+
+
+  const originY =
+    pixelY -
+    top;
+
+
+  /*
+   * Position popup.
+   */
+
+  sectionSurface.style.left =
+    `${centerX}px`;
+
+
+  sectionSurface.style.top =
+    `${centerY}px`;
+
+
+  sectionSurface.style.width =
+    `${popupWidth}px`;
+
+
+  sectionSurface.style.maxHeight =
+    `${popupHeight}px`;
+
 
   sectionSurface.style.setProperty(
     "--origin-x",
@@ -1380,7 +1672,7 @@ function openSection(
 
 
   /*
-   * Apply surface
+   * Surface color
    */
 
   sectionSurface.className =
@@ -1388,7 +1680,7 @@ function openSection(
 
 
   /*
-   * Section title
+   * Label
    */
 
   sectionLabel.textContent =
@@ -1416,19 +1708,11 @@ function openSection(
     "aria-hidden",
     "false"
   );
-
-
-  /*
-   * Stop main interaction
-   */
-
-  document.body.style.overflow =
-    "hidden";
 }
 
 
 /* =========================================================
-   CLOSE SECTION
+   CLOSE
    ========================================================= */
 
 function closeSection() {
@@ -1449,13 +1733,30 @@ function closeSection() {
   );
 
 
-  opened = false;
+  opened =
+    false;
 
-  activeSection = null;
 
+  /*
+   * Small delay so next opening
+   * starts cleanly.
+   */
 
-  document.body.style.overflow =
-    "hidden";
+  setTimeout(
+    () => {
+
+      if (!opened) {
+
+        sectionSurface.style.width =
+          "";
+
+        sectionSurface.style.maxHeight =
+          "";
+      }
+
+    },
+    350
+  );
 }
 
 
@@ -1470,7 +1771,7 @@ closeButton.addEventListener(
 
 
 /* =========================================================
-   ESCAPE
+   ESC
    ========================================================= */
 
 window.addEventListener(
@@ -1478,7 +1779,8 @@ window.addEventListener(
   event => {
 
     if (
-      event.key === "Escape"
+      event.key ===
+      "Escape"
     ) {
 
       closeSection();
@@ -1491,7 +1793,7 @@ window.addEventListener(
    RESIZE
    ========================================================= */
 
-let resizeTimer = null;
+let resizeTimer;
 
 
 window.addEventListener(
@@ -1506,14 +1808,14 @@ window.addEventListener(
     resizeTimer =
       setTimeout(
         resize,
-        120
+        100
       );
   }
 );
 
 
 /* =========================================================
-   INITIALIZE
+   START
    ========================================================= */
 
 resize();
